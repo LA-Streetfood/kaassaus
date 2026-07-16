@@ -6,24 +6,31 @@
   <title>Welke kaas past bij jouw zaak?</title>
   <meta name="description" content="Ontdek in twee minuten welke kaas of kaassaus van LA Streetfood het beste past bij jouw gerecht, keuken en manier van werken." />
   <style>
+    /* Kleuren, lettertype en radius komen uit de CSS van la-streetfood.com,
+       zodat de iframe niet afwijkt van de rest van de site.
+       Open Sans wordt door de site zelf ook niet als webfont geladen; we nemen
+       dezelfde declaratie over, dus dezelfde terugval op het systeemlettertype. */
     :root{
-      --la-green:#0f5c45;
-      --la-lime:#d9ef5b;
-      --cream:#f7f3e8;
+      --la-green:#265b45;      /* --bg-color-green */
+      --la-dark:#24513c;       /* --bg-color-bluegreen */
+      --accent:#fbb614;        /* --button-color-yellow */
+      --bluegrey:#f1f4f7;      /* --bg-color-bluegrey */
+      --border-grey:#aaa;      /* --border-color-grey */
       --ink:#1d211f;
       --muted:#6f756f;
       --line:#d9ded8;
-      --accent:#f3b51b;
-      --shadow:0 18px 55px rgba(25,42,34,.16);
+      --radius:10px;           /* kaarten */
+      --radius-btn:5px;        /* knoppen, zoals .button op de site */
     }
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
     body{
       margin:0;
-      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family:"Open Sans", sans-serif;
       color:var(--ink);
       background:transparent;
     }
+    h2,h3{font-family:"Open Sans Condensed", "Open Sans", sans-serif}
     button,input,select,textarea{font:inherit}
     button{cursor:pointer}
     /* Smalle iframe-breedte: past binnen een contentkolom op de categoriepagina */
@@ -31,10 +38,9 @@
 
     /* ---------- Vragen ---------- */
     .main-card{
-      background:#fffdf8;
-      border:1px solid rgba(15,92,69,.12);
-      box-shadow:0 6px 24px rgba(25,42,34,.07);
-      border-radius:20px;
+      background:#ffffff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
       overflow:hidden;
     }
     .topbar{
@@ -44,25 +50,37 @@
     }
     .progress-wrap{flex:1}
     .progress-label{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:8px}
-    .progress-track{height:10px;background:#edf0ec;border-radius:999px;overflow:hidden}
-    .progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--la-green),var(--la-lime));transition:width .35s ease}
-    .quiet-btn{border:0;background:#eef3ef;color:var(--la-green);font-weight:800;border-radius:999px;padding:10px 14px}
+    .progress-track{height:8px;background:var(--bluegrey);border-radius:var(--radius-btn);overflow:hidden}
+    .progress-bar{height:100%;width:0;background:var(--la-green);transition:width .35s ease}
+    /* Omlijnd: geen vulling, grijze rand en tekst */
+    .quiet-btn{
+      background:none;border:1px solid var(--border-grey);color:var(--muted);
+      font-weight:700;border-radius:var(--radius-btn);padding:9px 14px;transition:.15s ease;
+    }
+    .quiet-btn:hover{border-color:var(--la-green);color:var(--la-green)}
     .stage{padding:24px 22px}
-    .step{display:none;animation:fade .28s ease}
-    .step.active{display:block}
+    /* Vaste hoogte: het blok springt niet tussen de stappen.
+       De langste vraag is het startscherm (581 px). 615 ligt daar net boven
+       en laat de vragen even hoog uitkomen als het resultaat, zodat de
+       iframe ook bij de laatste stap niet verspringt.
+       Wordt een stap ooit langer dan 615, dan moet dit getal mee omhoog. */
+    .step{display:none;animation:fade .28s ease;min-height:615px}
+    .step.active{display:flex;flex-direction:column}
+    /* De knoppenrij zakt naar de onderkant, zodat die altijd op dezelfde plek staat */
+    .step.active .nav{margin-top:auto}
     @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-    .step h2{font-size:clamp(23px,3.2vw,30px);line-height:1.12;margin:0 0 8px}
-    .lead{color:var(--muted);font-size:16px;line-height:1.5;margin:0 0 20px}
+    .step h2{font-size:clamp(23px,3.2vw,30px);line-height:1.12;margin:0 0 18px}
     .options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
     .option{
       position:relative;
-      border:2px solid #e4e8e3;background:white;border-radius:14px;
+      /* rand altijd 2px, anders verspringt de tekst bij het selecteren */
+      border:2px solid var(--line);background:white;border-radius:var(--radius-btn);
       padding:14px 34px 14px 14px;min-height:78px;
       display:flex;gap:11px;align-items:flex-start;
-      transition:.18s ease;text-align:left;
+      transition:.15s ease;text-align:left;
     }
-    .option:hover{transform:translateY(-2px);border-color:#b8c9bf;box-shadow:0 8px 24px rgba(30,52,42,.08)}
-    .option.selected{border-color:var(--la-green);background:#eef7f1;box-shadow:0 0 0 4px rgba(15,92,69,.08)}
+    .option:hover{border-color:var(--la-green)}
+    .option.selected{border-color:var(--la-green);background:var(--bluegrey)}
     .option .icon{font-size:22px;line-height:1}
     .option b{display:block;font-size:15px;margin-bottom:3px;line-height:1.25}
     .option small{color:var(--muted);font-size:13px;line-height:1.35}
@@ -73,38 +91,43 @@
     .option.selected .check{background:var(--la-green);color:white}
     .hint{
       margin-top:14px;
-      background:#fff8dc;border:1px solid #f1d879;color:#6f5920;border-radius:12px;padding:10px 12px;
+      background:#fff8dc;border:1px solid #f1d879;color:#6f5920;border-radius:var(--radius-btn);padding:10px 12px;
       font-size:13px;display:none;
     }
     .hint.show{display:block}
     .nav{margin-top:22px;display:flex;justify-content:space-between;gap:12px;align-items:center}
-    .btn{border:0;border-radius:999px;padding:12px 18px;font-weight:900;font-size:15px;transition:.18s ease}
+    /* rand ook op de groene knop, anders zijn de twee knoppen 2px verschillend hoog */
+    .btn{border:1px solid transparent;border-radius:var(--radius-btn);padding:11px 18px;font-weight:700;font-size:15px;transition:.15s ease}
     .btn.primary{background:var(--la-green);color:white}
-    .btn.primary:hover{transform:translateY(-1px);box-shadow:0 10px 25px rgba(15,92,69,.22)}
-    .btn.secondary{background:#edf1ed;color:var(--la-green)}
-    .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
-    .understanding{
-      display:flex;gap:12px;align-items:flex-start;background:#edf7f0;border-left:4px solid var(--la-green);
-      padding:14px;border-radius:12px;margin:0 0 20px;font-size:15px;line-height:1.45;
+    .btn.primary:hover{background:var(--la-dark)}
+    /* Terug: geen vulling, grijze rand en tekst */
+    .btn.secondary{background:none;border-color:var(--border-grey);color:var(--muted)}
+    .btn.secondary:hover{border-color:var(--la-green);color:var(--la-green)}
+    .btn:disabled{opacity:.4;cursor:not-allowed}
+
+    /* ---------- Startscherm: de zes producten ---------- */
+    /* Twee rijen van drie: vult de vaste hoogte van het blok op */
+    .start-images{
+      display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;
+      margin:20px 0 0;
     }
-    .understanding .bubble{font-size:22px}
-    .understanding strong{display:block;margin-bottom:3px}
+    /* Op het startscherm alleen een rand, geen grijze vulling */
+    .start-images .thumb{aspect-ratio:1/1;background:none;border:1px solid var(--line)}
 
     /* ---------- Resultaat ---------- */
-    .result-intro{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:20px}
+    .result-intro{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:16px}
     .result-intro h2{margin:0}
-    .result-intro .lead{margin:4px 0 0}
-    .badge{background:var(--la-lime);color:#183c2f;border-radius:999px;padding:7px 11px;font-weight:900;font-size:13px;white-space:nowrap}
+    .badge{background:var(--accent);color:white;border-radius:var(--radius-btn);padding:7px 11px;font-weight:700;font-size:13px;white-space:nowrap}
     .results{display:grid;gap:14px}
     /* Match 2 en 3 naast elkaar */
     .results-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
     .result-card{
-      border:1px solid #dce4dd;background:white;border-radius:16px;padding:18px;
+      border:1px solid var(--line);background:white;border-radius:var(--radius);padding:18px;
       position:relative;overflow:hidden;
       display:grid;grid-template-columns:180px 1fr;gap:18px;align-items:start;
     }
     .thumb{
-      background:#f6f8f5;border:1px solid #ecefea;border-radius:12px;
+      background:var(--bluegrey);border:1px solid var(--line);border-radius:var(--radius-btn);
       aspect-ratio:1/1;display:grid;place-items:center;overflow:hidden;
     }
     .thumb img{width:100%;height:100%;object-fit:contain;display:block;padding:6px}
@@ -112,69 +135,75 @@
     /* Percentage staat naast de titel: scheelt een hele kolom breedte */
     .rank{
       display:flex;align-items:baseline;gap:7px;
-      background:#eef7f1;border-radius:999px;
+      background:var(--la-green);border-radius:var(--radius-btn);
       padding:5px 12px;margin-bottom:10px;width:fit-content;
     }
-    .rank .nr{font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.06em}
-    .rank .percent{font-size:20px;font-weight:950;color:var(--la-green);line-height:1}
-    .result-card h3{font-size:19px;margin:0 0 5px;line-height:1.2}
-    .artnr{font-size:12px;font-weight:900;color:var(--muted);letter-spacing:.06em;margin-bottom:4px}
-    .tagline{font-weight:800;color:var(--la-green);margin-bottom:8px;font-size:15px}
+    /* Winnaar: linkerkolom met de pil boven de foto. Beide kolommen beginnen
+       bovenaan (align-items:start), dus de pil en het artikelnummer liggen gelijk. */
+    .card-left{display:flex;flex-direction:column;gap:10px}
+    .card-left .rank{margin-bottom:0}
+    .rank .nr{font-size:11px;color:rgba(255,255,255,.75);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+    .rank .percent{font-size:20px;font-weight:700;color:white;line-height:1}
+    .result-card h3{font-size:19px;margin:0 0 8px;line-height:1.2}
+    .artnr{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;margin-bottom:4px}
     .desc{font-size:14px;line-height:1.5;color:#3f4943}
 
-    /* Match 2 en 3: foto boven, daaronder naam, tagline en knop */
+    /* Match 2 en 3: doorverwijskaartje, dus kleine foto links naast de naam */
     .result-card.compact{
-      background:#fbfcfa;padding:15px;
-      display:flex;flex-direction:column;align-items:stretch;gap:0;
+      background:#fcfdfe;padding:14px;
+      grid-template-columns:84px 1fr;gap:12px;
     }
-    /* Vaste hoogte, anders wordt de foto van nr. 2 groter dan die van nr. 1 */
-    .result-card.compact .thumb{aspect-ratio:auto;height:132px;margin-bottom:12px}
-    .result-card.compact h3{font-size:16px}
-    .result-card.compact .tagline{margin-bottom:12px;font-size:14px}
-    /* margin-top:auto lijnt de knoppen van beide kaarten onderaan uit */
-    .result-card.compact .card-cta{margin-top:auto;padding:10px 15px;min-height:40px;font-size:14px}
-    .result-card.compact .cta-soon{margin-top:auto}
+    .result-card.compact .thumb{height:84px}
+    .result-card.compact h3{font-size:15px;margin:0 0 8px}
+    .result-card.compact .rank{padding:3px 9px;margin-bottom:6px}
+    .result-card.compact .rank .percent{font-size:16px}
     .why{
-      margin-top:10px;padding:9px 12px;border-radius:8px;
-      background:#eef7f1;color:#2c4a3c;line-height:1.45;font-size:13px;font-weight:700;
+      margin-top:10px;padding:9px 12px;border-radius:var(--radius-btn);
+      background:var(--bluegrey);color:#2c4a3c;line-height:1.45;font-size:13px;font-weight:700;
     }
+    /* Gele knop met witte tekst, zoals .button op la-streetfood.com */
     .card-cta{
       display:inline-flex;align-items:center;justify-content:center;
-      margin-top:14px;min-height:44px;padding:12px 18px;border-radius:8px;
-      background:var(--accent);color:#143429;
-      text-decoration:none;font-weight:950;font-size:15px;transition:.18s ease;
+      margin-top:14px;min-height:44px;padding:12px 18px;border-radius:var(--radius-btn);
+      background:var(--accent);color:white;
+      text-decoration:none;font-weight:700;font-size:15px;transition:.15s ease;
     }
-    .card-cta:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(0,0,0,.14)}
-    .card-cta.ghost{background:#eef3ef;color:var(--la-green)}
+    .card-cta:hover{background:#e5a50e}
+    /* Match 2 en 3: alleen een tekstlink, zodat de gele knop het accent houdt */
+    .card-link{
+      display:inline-block;color:var(--la-green);
+      font-weight:700;font-size:14px;text-decoration:none;
+    }
+    .card-link:hover{text-decoration:underline}
     .cta-soon{
-      display:inline-block;margin-top:14px;padding:11px 15px;border-radius:8px;
-      background:#fff8dc;border:1px solid #f1d879;color:#6f5920;font-weight:850;font-size:13px;
+      display:inline-block;margin-top:14px;padding:11px 15px;border-radius:var(--radius-btn);
+      background:#fff8dc;border:1px solid #f1d879;color:#6f5920;font-weight:700;font-size:13px;
     }
 
     /* ---------- Alle producten ---------- */
-    .all-products{margin-top:18px;background:white;border:1px solid var(--line);border-radius:16px;padding:18px;font-size:15px}
-    .all-products summary{cursor:pointer;font-weight:900;color:var(--la-green)}
+    .all-products{margin-top:18px;background:white;border:1px solid var(--line);border-radius:var(--radius);padding:18px;font-size:15px}
+    .all-products summary{cursor:pointer;font-weight:700;color:var(--la-green)}
     .product-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
     .product-mini{
-      border:1px solid #e3e7e3;border-radius:14px;padding:14px;
+      border:1px solid var(--line);border-radius:var(--radius-btn);padding:14px;
       display:flex;justify-content:space-between;gap:12px;align-items:center;
     }
     .product-mini b{display:block;margin-bottom:4px;font-size:14px}
     .product-mini small{display:block;color:var(--muted);line-height:1.35;font-size:13px}
     .mini-pct{
-      flex:0 0 auto;background:#eef7f1;color:var(--la-green);
-      border-radius:10px;padding:6px 9px;font-weight:950;font-size:14px;
+      flex:0 0 auto;background:var(--bluegrey);color:var(--la-green);
+      border-radius:var(--radius-btn);padding:6px 9px;font-weight:700;font-size:14px;
     }
-    .product-mini a{display:inline-block;margin-top:7px;color:var(--la-green);font-weight:900;text-decoration:none;font-size:13px}
-    .soon-mini{display:inline-block;margin-top:7px;color:#8a7430;font-weight:850}
-
-    .footer-note{padding:14px 20px;text-align:center;color:var(--muted);font-size:12px;background:#fafbf9;border-top:1px solid var(--line)}
+    .product-mini a{display:inline-block;margin-top:7px;color:var(--la-green);font-weight:700;text-decoration:none;font-size:13px}
+    .soon-mini{display:inline-block;margin-top:7px;color:#8a7430;font-weight:700}
 
     /* Onder 620px staat de iframe-kolom te smal voor twee kaarten naast elkaar */
     @media (max-width:620px){
       .stage{padding:20px 16px}
       .options,.product-grid,.results-row{grid-template-columns:1fr}
       .topbar{padding:14px 16px}
+      /* Zes foto's naast elkaar wordt te klein op mobiel */
+      .start-images{grid-template-columns:repeat(3,minmax(0,1fr))}
       /* Foto boven de tekst in plaats van ernaast */
       .result-card{grid-template-columns:1fr;gap:12px}
       .result-card .thumb{aspect-ratio:auto;height:170px}
@@ -195,11 +224,7 @@
       <div class="stage">
         <section class="step active" data-step="0">
           <h2>Welke kaas past bij jouw zaak?</h2>
-          <p class="lead">De ene kaas is de andere niet. Beantwoord zes korte vragen en zie welke van onze zes kazen en kaassauzen het beste bij jouw gerecht en keuken passen.</p>
-          <div class="understanding">
-            <div class="bubble">👂</div>
-            <div><strong>We beginnen met luisteren.</strong>Jouw antwoorden bepalen welke kazen hoger of lager scoren.</div>
-          </div>
+          <div class="start-images" id="startImages"></div>
           <div class="nav">
             <span></span>
             <button class="btn primary" type="button" id="startBtn" data-next>Start de keuzehulp →</button>
@@ -207,40 +232,31 @@
         </section>
 
         <section class="step" data-step="1" data-key="dish">
-          <h2>Waar gebruik je de kaas vooral voor?</h2>
-          <p class="lead">Het gerecht bepaalt het meest wat de kaas moet doen.</p>
+          <h2>Waar wil je kaas voor gebruiken?</h2>
           <div class="options">
             <button class="option" data-value="nachos"><span class="icon">🌽</span><span><b>Nacho's en loaded fries</b><small>Royaal toppen met mooie kaasslierten of saus.</small></span><span class="check">✓</span></button>
             <button class="option" data-value="gratin"><span class="icon">🔥</span><span><b>Gratineren uit oven of salamander</b><small>De kaas moet smelten en kleuren.</small></span><span class="check">✓</span></button>
             <button class="option" data-value="burger"><span class="icon">🍔</span><span><b>Burgers, tosti's en broodjes</b><small>Kaas die je proeft en herkent.</small></span><span class="check">✓</span></button>
             <button class="option" data-value="fries"><span class="icon">🍟</span><span><b>Snacks, friet en hotdogs</b><small>Snel een warme laag kaassaus erover.</small></span><span class="check">✓</span></button>
             <button class="option" data-value="dips"><span class="icon">🥖</span><span><b>Borrel, dips en sharing</b><small>Brooddip, kleine fondue of delen aan tafel.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="events"><span class="icon">🎉</span><span><b>Festival, stadion of bioscoop</b><small>Grote volumes in korte tijd wegzetten.</small></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
         </section>
 
-        <section class="step" data-step="2" data-key="priorities" data-max="3">
+        <section class="step" data-step="2" data-key="priorities" data-max="2">
           <h2>Wat is voor jou het belangrijkst?</h2>
-          <p class="lead">Kies maximaal 3 punten. Zo blijft het advies scherp.</p>
           <div class="options">
-            <button class="option" data-value="speed"><span class="icon">⚡</span><span><b>Snel klaar tijdens service</b><small>Weinig tijd tussen bestelling en bord.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="easy"><span class="icon">🍳</span><span><b>Simpele bereiding</b><small>Geen recept, geen mise-en-place.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="waste"><span class="icon">❄️</span><span><b>Weinig derving</b><small>Alleen openmaken wat je nodig hebt.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="margin"><span class="icon">€</span><span><b>Foodcost en marge</b><small>Een goede balans tussen prijs en resultaat.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="taste"><span class="icon">🧀</span><span><b>Echte kaassmaak</b><small>Geen analoog, maar kaas die je ruikt en proeft.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="premium"><span class="icon">⭐</span><span><b>Premium uitstraling</b><small>Passend bij een hoger segment.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="dose"><span class="icon">📏</span><span><b>Exact doseren</b><small>Iedere portie hetzelfde en grip op je kostprijs.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="spicy"><span class="icon">🌶️</span><span><b>Pit en karakter</b><small>Iets meer smaak dan standaard.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="volume"><span class="icon">🏟️</span><span><b>Grote volumes aankunnen</b><small>Doordraaien tijdens de piek.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="cost"><span class="icon">€</span><span><b>Kosten</b><small>Een goede balans tussen prijs en resultaat.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="taste"><span class="icon">🧀</span><span><b>Smaak</b><small>Geen analoog, maar kaas die je ruikt en proeft.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="easy"><span class="icon">⚡</span><span><b>Snel en makkelijk</b><small>Weinig handelingen tussen bestelling en bord.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="quality"><span class="icon">⭐</span><span><b>Kwaliteit</b><small>Hoogwaardige kaas met een premium uitstraling.</small></span><span class="check">✓</span></button>
           </div>
-          <div class="hint" id="maxHint">Je hebt 3 punten gekozen. Dat is genoeg voor een scherp advies.</div>
+          <div class="hint" id="maxHint">Je hebt 2 punten gekozen. Dat is genoeg voor een scherp advies.</div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
         </section>
 
         <section class="step" data-step="3" data-key="form">
           <h2>Zoek je een kaassaus of vaste kaas?</h2>
-          <p class="lead">Eén antwoord kan technisch al bepalend zijn.</p>
           <div class="options">
             <button class="option" data-value="sauce"><span class="icon">🥣</span><span><b>Vloeibare kaassaus</b><small>Opwarmen, toppen en klaar.</small></span><span class="check">✓</span></button>
             <button class="option" data-value="solid"><span class="icon">🧀</span><span><b>Vaste kaas</b><small>Geraspt of in plakken.</small></span><span class="check">✓</span></button>
@@ -251,7 +267,6 @@
 
         <section class="step" data-step="4" data-key="volume">
           <h2>Hoeveel kaas draai je per dag?</h2>
-          <p class="lead">Het volume bepaalt de verpakking die bij je past.</p>
           <div class="options">
             <button class="option" data-value="high"><span class="icon">🏟️</span><span><b>Grote volumes en pieken</b><small>Drukke zaak, evenementen of vast hoog verbruik.</small></span><span class="check">✓</span></button>
             <button class="option" data-value="mid"><span class="icon">🍽️</span><span><b>Regelmatig, maar wisselend</b><small>Dagelijks op de kaart, geen extreme pieken.</small></span><span class="check">✓</span></button>
@@ -261,27 +276,24 @@
         </section>
 
         <section class="step" data-step="5" data-key="equipment">
-          <h2>Hoe wil je de kaas bereiden?</h2>
-          <p class="lead">Kies wat in jouw keuken het handigst werkt.</p>
+          <h2>Hoe wil je tijdens de service werken?</h2>
           <div class="options">
-            <button class="option" data-value="pan"><span class="icon">🔥</span><span><b>Pan of bain-marie</b><small>Opwarmen en lang soepel warmhouden.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="bottle"><span class="icon">🍾</span><span><b>Knijpfles, direct doseren</b><small>Fles in de bain-marie en rechtstreeks toppen.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="micro"><span class="icon">♨️</span><span><b>Heet water of magnetron</b><small>Alleen opwarmen wat ik nu nodig heb.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="oven"><span class="icon">🧑‍🍳</span><span><b>Oven, salamander of grill</b><small>De kaas moet smelten op het gerecht.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="pan"><span class="icon">🔥</span><span><b>Grote pan klaar in de bain-marie</b><small>Eén keer opwarmen, de hele service uit blijven scheppen.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="bottle"><span class="icon">🍾</span><span><b>Uit een knijpfles</b><small>Fles warm in de bain-marie, daarna rechtstreeks op het gerecht.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="portion"><span class="icon">♨️</span><span><b>Per portie opwarmen</b><small>Zak in heet water of de magnetron, alleen wat je nu nodig hebt.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="oven"><span class="icon">🧑‍🍳</span><span><b>Smelten op het gerecht</b><small>Kaas erover en de oven, salamander of grill in.</small></span><span class="check">✓</span></button>
             <button class="option" data-value="flex"><span class="icon">🛠️</span><span><b>Meerdere manieren mogelijk</b><small>De bereiding hoeft mijn keuze niet te beperken.</small></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
         </section>
 
-        <section class="step" data-step="6" data-key="style">
-          <h2>Welke beleving past bij jouw zaak?</h2>
-          <p class="lead">Dit is vaak het verschil tussen "goed" en "precies goed".</p>
+        <section class="step" data-step="6" data-key="flavour">
+          <h2>Welke smaak zoek je?</h2>
           <div class="options">
-            <button class="option" data-value="american"><span class="icon">🇺🇸</span><span><b>Amerikaans en herkenbaar</b><small>Zoals in het stadion of de bioscoop.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="premium"><span class="icon">⭐</span><span><b>Premium en echt</b><small>Hoogwaardige kaas die je duidelijk proeft.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="spicy"><span class="icon">🌶️</span><span><b>Pittig met karakter</b><small>Duidelijk aanwezig, maar kaas blijft de hoofdrol.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="craft"><span class="icon">👨‍🍳</span><span><b>Ambachtelijk en zelfgemaakt</b><small>Alsof de kok hem zelf heeft gemaakt.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="classic"><span class="icon">✅</span><span><b>Klassiek en betrouwbaar</b><small>Breed toegankelijk, werkt altijd.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="mild"><span class="icon">🥛</span><span><b>Mild en romig</b><small>Breed toegankelijk, zonder uitgesproken pit.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="pittig"><span class="icon">🌶️</span><span><b>Pittig</b><small>Jalapeño of Mexicaanse pepers, met duidelijke pit.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="vol"><span class="icon">🧀</span><span><b>Vol en gerijpt</b><small>Echte cheddar die je ruikt en proeft.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="natuurlijk"><span class="icon">👨‍🍳</span><span><b>Natuurlijk en ambachtelijk</b><small>Alsof de kok hem zelf heeft gemaakt.</small></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Bekijk mijn match →</button></div>
         </section>
@@ -290,7 +302,6 @@
           <div class="result-intro">
             <div>
               <h2>Jouw beste matches</h2>
-              <p class="lead" id="resultLead">Deze selectie is gebaseerd op jouw antwoorden.</p>
             </div>
             <span class="badge">Top 3</span>
           </div>
@@ -300,12 +311,8 @@
             <summary id="allProductsSummary">Bekijk alle producten met jouw matchpercentage</summary>
             <div class="product-grid" id="productGrid"></div>
           </details>
-
-          <div class="nav"><button class="btn secondary" id="restartBottom" type="button">↻ Opnieuw beginnen</button><span></span></div>
         </section>
       </div>
-
-      <div class="footer-note">Deze keuzehulp maakt een slimme shortlist. De definitieve keuze maak je op smaak, in je eigen keuken.</div>
     </main>
   </div>
 
@@ -357,47 +364,47 @@
         tagline:"De beste kaasmix voor jouw nacho's.",
         desc:"Een uitgebalanceerde mix van Gouda en Cheddar, ontwikkeld voor de Tex-Mexkeuken. Blijft smeuïg en elastisch, dus je gast trekt niet één harde plak van het gerecht.",
         base:5, tags:["Kaasmix","Nacho's","Gratineren","Echte kaassmaak"],
-        scores:{speed:7,easy:8,waste:6,margin:7,taste:8,premium:6,dose:4,spicy:2,volume:7}
+        scores:{cost:7,taste:8,easy:8,quality:6}
       },
       {
         id:"la1010", art:"LA1010", type:"solid",
-        name:"Real Irish Cheddar — plakken van 20 g",
+        name:"Real Irish Cheddar",
         tagline:"Echte Ierse cheddar voor een premium burger.",
         desc:"Gemaakt van Ierse koemelk en minimaal zeven maanden gerijpt. Smelt mooi over de burger, maar blijft herkenbaar als echte kaas. 25 voorgesneden plakken per pak.",
         base:5, tags:["Plakken 20 g","Premium burger","Vaste portie","7 maanden gerijpt"],
-        scores:{speed:9,easy:9,waste:8,margin:5,taste:9,premium:9,dose:10,spicy:2,volume:7}
+        scores:{cost:5,taste:9,easy:9,quality:9}
       },
       {
         id:"la155", art:"LA155", type:"sauce",
-        name:"Piñata Cheddar Cheese Sauce — blik 3 kg",
+        name:"Piñata Cheddar Cheese Sauce",
         tagline:"De Amerikaanse kaassaus die je kent van stadions en bioscopen.",
         desc:"Gemaakt in Wisconsin. Vol van smaak, maar minder zout dan veel andere Amerikaanse kaassauzen en zonder scherpe chemische nasmaak. Halal.",
         base:5, tags:["Blik 3 kg","Grote volumes","Amerikaans","Halal"],
-        scores:{speed:8,easy:8,waste:5,margin:8,taste:7,premium:5,dose:4,spicy:1,volume:10}
+        scores:{cost:8,taste:7,easy:8,quality:5}
       },
       {
         id:"la156", art:"LA156", type:"sauce",
-        name:"Piñata Jalapeño Cheddar Cheese Sauce — blik 3 kg",
+        name:"Piñata Jalapeño Cheddar Cheese Sauce",
         tagline:"Dezelfde Amerikaanse beleving, met de smaak van jalapeño.",
         desc:"Volle cheddar gecombineerd met jalapeñopuree en groene paprika. De pit is duidelijk aanwezig, maar de kaassmaak blijft de hoofdrol spelen. Geen pepers snijden, geen extra handelingen.",
         base:4, tags:["Blik 3 kg","Pittig","Grote volumes","Direct meer smaak"],
-        scores:{speed:8,easy:8,waste:5,margin:8,taste:7,premium:5,dose:4,spicy:9,volume:10}
+        scores:{cost:8,taste:7,easy:8,quality:5}
       },
       {
         id:"la157", art:"LA157", type:"sauce",
-        name:"Imokilly Ierse Cheddar Cheese Sauce — knijpfles 950 g",
+        name:"Imokilly Ierse Cheddar Cheese Sauce",
         tagline:"Onze meest hoogwaardige kaassaus, met het gemak van een spuitfles.",
         desc:"47% echte kaas, waarvan 26% Ierse cheddar, plus boter voor extra romigheid. Fles in de bain-marie en rechtstreeks doseren. Acht flessen per doos, dus je opent alleen wat je nodig hebt.",
         base:5, tags:["47% kaas","Knijpfles 950 g","Premium","Exact doseren"],
-        scores:{speed:9,easy:9,waste:8,margin:4,taste:10,premium:10,dose:9,spicy:1,volume:7}
+        scores:{cost:4,taste:10,easy:9,quality:10}
       },
       {
         id:"la152", art:"LA152", type:"sauce",
-        name:"Authentic Mexican Cheese Sauce — zak 400 g",
+        name:"Authentic Mexican Cheese Sauce",
         tagline:"Zoals een kok hem zelf zou maken.",
         desc:"Rijke kaassmaak, op smaak gebracht met Mexicaanse pepers en met een ambachtelijke uitstraling. Diepgevroren in zakken van 400 g: opwarmen in heet water of magnetron en klaar.",
         base:4, tags:["Zak 400 g","Ambachtelijk","Weinig derving","Diepvries"],
-        scores:{speed:7,easy:8,waste:10,margin:5,taste:9,premium:8,dose:8,spicy:6,volume:3}
+        scores:{cost:5,taste:9,easy:8,quality:8}
       }
     ];
 
@@ -469,8 +476,7 @@
         gratin:{la1000:22, la1010:12, la157:5},
         burger:{la1010:22, la157:12, la155:7, la156:7},
         fries:{la155:16, la156:15, la157:13, la1000:6},
-        dips:{la152:22, la157:11, la155:8, la156:8},
-        events:{la155:18, la156:15, la1000:8, la157:6}
+        dips:{la152:22, la157:11, la155:8, la156:8}
       };
       Object.entries(dishMap[a.dish]||{}).forEach(([id,p])=>add(scores,id,p));
 
@@ -489,20 +495,22 @@
       const equipmentMap={
         pan:{la155:16, la156:16, la157:6},
         bottle:{la157:22},
-        micro:{la152:22},
+        portion:{la152:22},
         oven:{la1000:18, la1010:15},
         flex:{la157:7, la155:6, la156:6, la1000:6, la1010:6, la152:6}
       };
       Object.entries(equipmentMap[a.equipment]||{}).forEach(([id,p])=>add(scores,id,p));
 
-      const styleMap={
-        american:{la155:24, la156:17, la1000:7},
-        premium:{la157:24, la1010:19, la152:9},
-        spicy:{la156:28, la152:13},
-        craft:{la152:28, la157:11, la1010:8},
-        classic:{la155:15, la1000:13, la1010:13, la157:6}
+      // Smaak volgens het dossier: LA155 romig en mild, LA156 romig en pittig,
+      // LA157 rijk en premium, LA152 Mexicaans en ambachtelijk,
+      // LA1000 gouda-cheddar, LA1010 volle Ierse cheddar (7 maanden gerijpt)
+      const flavourMap={
+        mild:{la155:24, la1000:13, la157:6},
+        pittig:{la156:28, la152:13},
+        vol:{la1010:24, la157:22, la1000:8},
+        natuurlijk:{la152:28, la157:11, la1010:9}
       };
-      Object.entries(styleMap[a.style]||{}).forEach(([id,p])=>add(scores,id,p));
+      Object.entries(flavourMap[a.flavour]||{}).forEach(([id,p])=>add(scores,id,p));
 
       const valid=products.filter(p=>scores[p.id]>-900).sort((x,y)=>scores[y.id]-scores[x.id]);
       const max=valid[0] ? scores[valid[0].id] : 1;
@@ -529,39 +537,49 @@
       const all=calculate();
       const top=all.slice(0,3);
 
-      function cta(p, ghost){
+      // De winnaar krijgt een gele knop, 2 en 3 een tekstlink
+      function cta(p){
         return hasUrl(p.id)
-          ? `<a class="card-cta${ghost?" ghost":""}" href="${PRODUCT_URLS[p.id]}" target="_top">Bekijk product en bestel →</a>`
+          ? `<a class="card-cta" href="${PRODUCT_URLS[p.id]}" target="_top">Bekijk product en bestel →</a>`
           : `<div class="cta-soon">Nieuw product. Neem contact op voor prijs en beschikbaarheid.</div>`;
       }
+      function ctaLink(p){
+        return hasUrl(p.id)
+          ? `<a class="card-link" href="${PRODUCT_URLS[p.id]}" target="_top">Bekijk product en bestel →</a>`
+          : `<span class="soon-mini">Nieuw product — binnenkort online</span>`;
+      }
 
-      // Nummer 1 krijgt het volledige verhaal met de foto ernaast
+      // Nummer 1 krijgt het volledige verhaal met de foto ernaast.
+      // Links de pil met de foto eronder, rechts de tekst. Doordat beide
+      // kolommen bovenaan beginnen, liggen de pil en het artikelnummer gelijk.
       function fullCard(p, i){
         return `
         <article class="result-card">
+          <div class="card-left">
+            <div class="rank"><span class="nr">Match ${i+1}</span><span class="percent">${p.pct}%</span></div>
+            ${thumb(p)}
+          </div>
+          <div>
+            <div class="artnr">${p.art}</div>
+            <h3>${p.name}</h3>
+            <div class="desc">${p.desc}</div>
+            <div class="why">${reasonMap[p.id]}</div>
+            ${cta(p)}
+          </div>
+        </article>`;
+      }
+
+      // 2 en 3 staan naast elkaar: kleine foto links, naam en tekstlink rechts
+      function compactCard(p, i){
+        return `
+        <article class="result-card compact">
           ${thumb(p)}
           <div>
             <div class="rank"><span class="nr">Match ${i+1}</span><span class="percent">${p.pct}%</span></div>
             <div class="artnr">${p.art}</div>
             <h3>${p.name}</h3>
-            <div class="tagline">${p.tagline}</div>
-            <div class="desc">${p.desc}</div>
-            <div class="why">${reasonMap[p.id]}</div>
-            ${cta(p, false)}
+            ${ctaLink(p)}
           </div>
-        </article>`;
-      }
-
-      // 2 en 3 staan naast elkaar: foto boven, dan naam en knop
-      function compactCard(p, i){
-        return `
-        <article class="result-card compact">
-          ${thumb(p)}
-          <div class="rank"><span class="nr">Match ${i+1}</span><span class="percent">${p.pct}%</span></div>
-          <div class="artnr">${p.art}</div>
-          <h3>${p.name}</h3>
-          <div class="tagline">${p.tagline}</div>
-          ${cta(p, true)}
         </article>`;
       }
 
@@ -598,7 +616,10 @@
       showStep(0);
     }
     document.getElementById("restartTop").addEventListener("click",restart);
-    document.getElementById("restartBottom").addEventListener("click",restart);
+
+    // De zes producten op het startscherm, uit dezelfde bron als de resultaten
+    document.getElementById("startImages").innerHTML =
+      products.map(p => thumb(p)).join("");
 
     updateProgress();
   </script>
