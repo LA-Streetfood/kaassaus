@@ -115,8 +115,12 @@
       display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;
       margin:20px 0 0;
     }
-    /* Op het startscherm alleen een rand, geen grijze vulling */
-    .start-images .thumb{aspect-ratio:1/1;background:none;border:1px solid var(--line)}
+    /* Op het startscherm alleen een rand, geen grijze vulling.
+       Liggend in plaats van vierkant: op de volle breedte zou een vierkante
+       tegel bijna 300 px hoog worden, en met twee rijen erven alle andere
+       stappen die hoogte. De packshots staan gecentreerd, dus ze verliezen
+       niets; ze krijgen alleen ruimte links en rechts. */
+    .start-images .thumb{aspect-ratio:3/2;background:none;border:1px solid var(--line)}
     /* LA152 is een liggende sfeerfoto: beeldvullend bijsnijden, anders staat
        hij als klein streepje tussen de uitgeknipte producten */
     .start-images .thumb-foto img{object-fit:cover;object-position:center;padding:0}
