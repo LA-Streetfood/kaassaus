@@ -33,8 +33,10 @@
     h2,h3{font-family:"Open Sans Condensed", "Open Sans", sans-serif}
     button,input,select,textarea{font:inherit}
     button{cursor:pointer}
-    /* Smalle iframe-breedte: past binnen een contentkolom op de categoriepagina */
-.shell{max-width:760px;margin:0;padding:0}
+    /* Geen eigen maximumbreedte: het blok vult de iframe volledig, zodat het
+       precies zo breed is als de tekstkolom van het categorieblok eromheen.
+       De breedte wordt dus in de pagina bepaald, niet hier. */
+    .shell{width:100%;max-width:none;margin:0;padding:0}
 
     /* ---------- Vragen ---------- */
     .main-card{
@@ -59,12 +61,12 @@
     }
     .quiet-btn:hover{border-color:var(--la-green);color:var(--la-green)}
     .stage{padding:24px 22px}
-    /* Vaste hoogte: het blok springt niet tussen de stappen.
-       De langste vraag is het startscherm (581 px). 615 ligt daar net boven
-       en laat de vragen even hoog uitkomen als het resultaat, zodat de
-       iframe ook bij de laatste stap niet verspringt.
-       Wordt een stap ooit langer dan 615, dan moet dit getal mee omhoog. */
-    .step{display:none;animation:fade .28s ease;min-height:615px}
+    /* Alle stappen even hoog, zodat het blok niet verspringt. Het echte getal
+       wordt door syncStepHeight() gemeten en hieronder overschreven: de
+       fotostrook is vierkant, dus hoe breder de kolom, hoe hoger het
+       startscherm. Deze 525 px is alleen de startwaarde voordat het script
+       heeft gemeten (en de terugval als JavaScript uitvalt). */
+    .step{display:none;animation:fade .28s ease;min-height:525px}
     .step.active{display:flex;flex-direction:column}
     /* De knoppenrij zakt naar de onderkant, zodat die altijd op dezelfde plek staat */
     .step.active .nav{margin-top:auto}
@@ -81,7 +83,6 @@
     }
     .option:hover{border-color:var(--la-green)}
     .option.selected{border-color:var(--la-green);background:var(--bluegrey)}
-    .option .icon{font-size:22px;line-height:1}
     .option b{display:block;font-size:15px;margin-bottom:3px;line-height:1.25}
     .option small{color:var(--muted);font-size:13px;line-height:1.35}
     .option .check{
@@ -95,7 +96,10 @@
       font-size:13px;display:none;
     }
     .hint.show{display:block}
-    .nav{margin-top:22px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+    /* De padding, niet de marge, houdt de knoppen van de inhoud af: op de
+       actieve stap wordt margin-top overschreven door auto, en dan zou de
+       knop tegen de onderste fotorij van het startscherm plakken. */
+    .nav{margin-top:22px;padding-top:22px;display:flex;justify-content:space-between;gap:12px;align-items:center}
     /* rand ook op de groene knop, anders zijn de twee knoppen 2px verschillend hoog */
     .btn{border:1px solid transparent;border-radius:var(--radius-btn);padding:11px 18px;font-weight:700;font-size:15px;transition:.15s ease}
     .btn.primary{background:var(--la-green);color:white}
@@ -105,14 +109,17 @@
     .btn.secondary:hover{border-color:var(--la-green);color:var(--la-green)}
     .btn:disabled{opacity:.4;cursor:not-allowed}
 
-    /* ---------- Startscherm: de zes producten ---------- */
-    /* Twee rijen van drie: vult de vaste hoogte van het blok op */
+    /* ---------- Startscherm: de zes productfoto's ---------- */
+    /* Twee rijen van drie, over de volle breedte van het blok */
     .start-images{
       display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;
       margin:20px 0 0;
     }
     /* Op het startscherm alleen een rand, geen grijze vulling */
     .start-images .thumb{aspect-ratio:1/1;background:none;border:1px solid var(--line)}
+    /* LA152 is een liggende sfeerfoto: beeldvullend bijsnijden, anders staat
+       hij als klein streepje tussen de uitgeknipte producten */
+    .start-images .thumb-foto img{object-fit:cover;object-position:center;padding:0}
 
     /* ---------- Resultaat ---------- */
     .result-intro{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:16px}
@@ -202,7 +209,7 @@
       .stage{padding:20px 16px}
       .options,.product-grid,.results-row{grid-template-columns:1fr}
       .topbar{padding:14px 16px}
-      /* Zes foto's naast elkaar wordt te klein op mobiel */
+      /* Zes foto's naast elkaar wordt te klein op mobiel: twee rijen van drie */
       .start-images{grid-template-columns:repeat(3,minmax(0,1fr))}
       /* Foto boven de tekst in plaats van ernaast */
       .result-card{grid-template-columns:1fr;gap:12px}
@@ -234,11 +241,11 @@
         <section class="step" data-step="1" data-key="dish">
           <h2>Waar wil je kaas voor gebruiken?</h2>
           <div class="options">
-            <button class="option" data-value="nachos"></span><span><b>Nacho's en loaded fries</b><small>Royaal toppen met mooie kaasslierten of saus.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="gratin"></span><span><b>Gratineren uit oven of salamander</b><small>De kaas moet smelten en kleuren.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="burger"></span><span><b>Burgers, tosti's en broodjes</b><small>Kaas die je proeft en herkent.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="fries"></span><span><b>Snacks, friet en hotdogs</b><small>Snel een warme laag kaassaus erover.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="dips"></span><span><b>Borrel, dips en sharing</b><small>Brooddip, kleine fondue of delen aan tafel.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="nachos"><span><b>Nacho's en loaded fries</b><small>Royaal toppen met mooie kaasslierten of saus.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="gratin"><span><b>Gratineren uit oven of salamander</b><small>De kaas moet smelten en kleuren.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="burger"><span><b>Burgers, tosti's en broodjes</b><small>Kaas die je proeft en herkent.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="fries"><span><b>Snacks, friet en hotdogs</b><small>Snel een warme laag kaassaus erover.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="dips"><span><b>Borrel, dips en sharing</b><small>Brooddip, kleine fondue of delen aan tafel.</small></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
         </section>
@@ -247,9 +254,9 @@
           <h2>Wat is voor jou het belangrijkst?</h2>
           <div class="options">
             <button class="option" data-value="cost"><span><b>Kosten</b><small>Een goede balans tussen prijs en resultaat.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="taste"></span><span><b>Smaak</b><small>Geen analoog, maar kaas die je ruikt en proeft.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="easy"></span><span><b>Snel en makkelijk</b><small>Weinig handelingen tussen bestelling en bord.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="quality"></span><span><b>Kwaliteit</b><small>Hoogwaardige kaas met een premium uitstraling.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="taste"><span><b>Smaak</b><small>Geen analoog, maar kaas die je ruikt en proeft.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="easy"><span><b>Snel en makkelijk</b><small>Weinig handelingen tussen bestelling en bord.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="quality"><span><b>Kwaliteit</b><small>Hoogwaardige kaas met een premium uitstraling.</small></span><span class="check">✓</span></button>
           </div>
           <div class="hint" id="maxHint">Je hebt 2 punten gekozen. Dat is genoeg voor een scherp advies.</div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
@@ -258,9 +265,9 @@
         <section class="step" data-step="3" data-key="form">
           <h2>Zoek je een kaassaus of vaste kaas?</h2>
           <div class="options">
-            <button class="option" data-value="sauce"></span><span><b>Vloeibare kaassaus</b><small>Opwarmen, toppen en klaar.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="solid"></span><span><b>Vaste kaas</b><small>Geraspt of in plakken.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="open"></span><span><b>Dat mag het advies bepalen</b><small>Ik sta open voor allebei.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="sauce"><span><b>Vloeibare kaassaus</b><small>Opwarmen, toppen en klaar.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="solid"><span><b>Vaste kaas</b><small>Geraspt of in plakken.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="open"><span><b>Dat mag het advies bepalen</b><small>Ik sta open voor allebei.</small></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
         </section>
@@ -268,9 +275,9 @@
         <section class="step" data-step="4" data-key="volume">
           <h2>Hoeveel kaas draai je per dag?</h2>
           <div class="options">
-            <button class="option" data-value="high"><span class="icon">🏟️</span><span><b>Grote volumes en pieken</b><small>Drukke zaak, evenementen of vast hoog verbruik.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="mid"><span class="icon">🍽️</span><span><b>Regelmatig, maar wisselend</b><small>Dagelijks op de kaart, geen extreme pieken.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="low"><span class="icon">🧊</span><span><b>Kleine hoeveelheden</b><small>Ik wil kwaliteit zonder derving.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="high"><span><b>Grote volumes en pieken</b><small>Drukke zaak, evenementen of vast hoog verbruik.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="mid"><span><b>Regelmatig, maar wisselend</b><small>Dagelijks op de kaart, geen extreme pieken.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="low"><span><b>Kleine hoeveelheden</b><small>Ik wil kwaliteit zonder derving.</small></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
         </section>
@@ -278,11 +285,11 @@
         <section class="step" data-step="5" data-key="equipment">
           <h2>Hoe wil je tijdens de service werken?</h2>
           <div class="options">
-            <button class="option" data-value="pan"><span class="icon">🔥</span><span><b>Grote pan klaar in de bain-marie</b><small>Eén keer opwarmen, de hele service uit blijven scheppen.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="bottle"><span class="icon">🍾</span><span><b>Uit een knijpfles</b><small>Fles warm in de bain-marie, daarna rechtstreeks op het gerecht.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="portion"><span class="icon">♨️</span><span><b>Per portie opwarmen</b><small>Zak in heet water of de magnetron, alleen wat je nu nodig hebt.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="oven"><span class="icon">🧑‍🍳</span><span><b>Smelten op het gerecht</b><small>Kaas erover en de oven, salamander of grill in.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="flex"><span class="icon">🛠️</span><span><b>Meerdere manieren mogelijk</b><small>De bereiding hoeft mijn keuze niet te beperken.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="pan"><span><b>Grote pan klaar in de bain-marie</b><small>Eén keer opwarmen, de hele service uit blijven scheppen.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="bottle"><span><b>Uit een knijpfles</b><small>Fles warm in de bain-marie, daarna rechtstreeks op het gerecht.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="portion"><span><b>Per portie opwarmen</b><small>Zak in heet water of de magnetron, alleen wat je nu nodig hebt.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="oven"><span><b>Smelten op het gerecht</b><small>Kaas erover en de oven, salamander of grill in.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="flex"><span><b>Meerdere manieren mogelijk</b><small>De bereiding hoeft mijn keuze niet te beperken.</small></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
         </section>
@@ -290,10 +297,10 @@
         <section class="step" data-step="6" data-key="flavour">
           <h2>Welke smaak zoek je?</h2>
           <div class="options">
-            <button class="option" data-value="mild"><span class="icon">🥛</span><span><b>Mild en romig</b><small>Breed toegankelijk, zonder uitgesproken pit.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="pittig"><span class="icon">🌶️</span><span><b>Pittig</b><small>Jalapeño of Mexicaanse pepers, met duidelijke pit.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="vol"><span class="icon">🧀</span><span><b>Vol en gerijpt</b><small>Echte cheddar die je ruikt en proeft.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="natuurlijk"><span class="icon">👨‍🍳</span><span><b>Natuurlijk en ambachtelijk</b><small>Alsof de kok hem zelf heeft gemaakt.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="mild"><span><b>Mild en romig</b><small>Breed toegankelijk, zonder uitgesproken pit.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="pittig"><span><b>Pittig</b><small>Jalapeño of Mexicaanse pepers, met duidelijke pit.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="vol"><span><b>Vol en gerijpt</b><small>Echte cheddar die je ruikt en proeft.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="natuurlijk"><span><b>Natuurlijk en ambachtelijk</b><small>Alsof de kok hem zelf heeft gemaakt.</small></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Bekijk mijn match →</button></div>
         </section>
@@ -351,10 +358,11 @@
 
     // Geen loading="lazy": in een iframe waarvan de ouder de hoogte bepaalt,
     // laden lazy afbeeldingen soms nooit. Het zijn er maar drie per scherm.
-    function thumb(p){
+    function thumb(p, extraClass){
+      const cls = extraClass ? `thumb ${extraClass}` : "thumb";
       return PRODUCT_IMAGES[p.id]
-        ? `<div class="thumb"><img src="${PRODUCT_IMAGES[p.id]}" alt="${p.name}"></div>`
-        : `<div class="thumb thumb-leeg" aria-hidden="true">🧀</div>`;
+        ? `<div class="${cls}"><img src="${PRODUCT_IMAGES[p.id]}" alt="${p.name}"></div>`
+        : `<div class="${cls} thumb-leeg" aria-hidden="true"></div>`;
     }
 
     const products = [
@@ -427,7 +435,7 @@
       steps.forEach(s=>s.classList.toggle("active", Number(s.dataset.step)===n));
       updateProgress();
       window.scrollTo({top:document.querySelector(".main-card").offsetTop-8,behavior:"smooth"});
-      if(n===resultIndex) renderResults();
+      if(n===resultIndex){ renderResults(); syncStepHeight(); }
     }
 
     document.querySelectorAll("[data-next]").forEach(btn=>btn.addEventListener("click",()=>showStep(state.step+1)));
@@ -617,9 +625,51 @@
     }
     document.getElementById("restartTop").addEventListener("click",restart);
 
-    // De zes producten op het startscherm, uit dezelfde bron als de resultaten
+    // Alle zes producten op het startscherm, uit dezelfde bron als de resultaten.
+    // Van LA152 hebben we alleen een liggende sfeerfoto en geen uitgeknipte
+    // packshot; die vullen we het vierkant beeldvullend in plaats van passend.
     document.getElementById("startImages").innerHTML =
-      products.map(p => thumb(p)).join("");
+      products.map(p => thumb(p, p.id === "la152" ? "thumb-foto" : "")).join("");
+
+    /* =======================================================================
+       GELIJKE HOOGTE VOOR ALLE STAPPEN
+       De fotostrook op het startscherm is vierkant, dus die schaalt mee met de
+       breedte van de kolom waarin de iframe staat. Een vast getal in de CSS
+       klopt dan maar bij één breedte. We meten daarom de langste stap en geven
+       die hoogte aan alle stappen. Meten gebeurt met min-height op nul, anders
+       meten we onze eigen vorige uitkomst terug.
+       ======================================================================= */
+    function syncStepHeight(){
+      const hoogste = Math.max(...steps.map(s=>{
+        // Inactieve stappen staan op display:none en meten dan 0. We geven ze
+        // daarom kort de active-class: dan meten we precies de layout die de
+        // stap straks krijgt, inclusief .nav{margin-top:auto}. Het gebeurt
+        // binnen één frame, dus de gebruiker ziet er niets van. De animatie
+        // staat tijdens het meten uit, anders start de fade opnieuw.
+        const wasActief=s.classList.contains("active");
+        s.style.animation="none";
+        s.style.minHeight="0px";
+        if(!wasActief) s.classList.add("active");
+        const h=s.scrollHeight;
+        if(!wasActief) s.classList.remove("active");
+        s.style.animation="";
+        return h;
+      }));
+      steps.forEach(s=>s.style.minHeight=Math.ceil(hoogste)+"px");
+    }
+
+    // Bij het laden staan de productfoto's er nog niet, en die bepalen de
+    // hoogte van het startscherm. Vandaar ook een meting na window.load.
+    syncStepHeight();
+    window.addEventListener("load", syncStepHeight);
+
+    // Bij het draaien van een tablet of het verslepen van een venster verandert
+    // de kolombreedte, en dus de hoogte van de vierkante foto's.
+    let hersyncTimer;
+    window.addEventListener("resize", ()=>{
+      clearTimeout(hersyncTimer);
+      hersyncTimer=setTimeout(syncStepHeight, 150);
+    });
 
     updateProgress();
   </script>
