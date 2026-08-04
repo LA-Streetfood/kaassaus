@@ -12,17 +12,19 @@
 <p>La sauce au fromage est devenue incontournable dans la cuisine streetfood. Sur des nachos, sur un burger ou dans des loaded fries&nbsp;: le fromage termine un plat en un seul geste. Pour la cuisine, c'est en outre tr&egrave;s pratique. Vous ajoutez rapidement du go&ucirc;t et du caract&egrave;re, sans lier vous-m&ecirc;me une sauce ni r&acirc;per du fromage.</p>
 <p>Mais quel type de fromage convient le mieux &agrave; votre plat et &agrave; votre mani&egrave;re de travailler&nbsp;? Notre assortiment comprend des sauces au fromage liquides &agrave; servir chaudes et des fromages solides &agrave; faire fondre, &agrave; gratiner ou &agrave; garnir. Le guide ci-dessous vous m&egrave;ne rapidement &agrave; la meilleure option pour votre carte.</p>
 <div style="flex: 0 0 auto; line-height: 0;">&nbsp;</div>
-<div style="width: 100%; max-width: 100%; height: 740px; overflow: hidden; margin: 0 auto 24px;"><iframe style="width: 100%; height: 100%; border: 0; display: block;" src="https://la-streetfood.github.io/kaassaus/index-fr.html" loading="lazy">
+<div id="kaasKeuzehulpVak" style="width: 100%; max-width: 100%; height: 740px; overflow: hidden; margin: 0 auto;"><iframe style="width: 100%; height: 100%; border: 0; display: block;" src="https://la-streetfood.github.io/kaassaus/index-fr.html" loading="lazy">
     </iframe></div>
-<table style="width: 100%; margin: 0; box-sizing: border-box;" border="0" cellspacing="0" cellpadding="4" align="center">
-<tbody>
-<tr>
-<td align="left">
-<h2 style="margin: 2px 0 4px 0;">D&eacute;couvrez et comparez les produits</h2>
-</td>
-</tr>
-</tbody>
-</table>
+<script>
+  // De keuzehulp meldt zijn eigen hoogte. Zonder dit stukje blijft het vak op
+  // de vaste hoogte hieronder staan: te veel lege ruimte op een breed scherm
+  // en een afgesneden knop op een smal scherm.
+  window.addEventListener("message", function (e) {
+    if (e.origin !== "https://la-streetfood.github.io") return;
+    if (!e.data || e.data.type !== "iframe-height") return;
+    document.getElementById("kaasKeuzehulpVak").style.height = e.data.height + "px";
+  });
+</script>
+<h2 style="margin: 32px 0 4px 0;">D&eacute;couvrez et comparez les produits</h2>
 <p style="margin-top: 4px;">Le guide vous a donn&eacute; quelques options int&eacute;ressantes&nbsp;? D&eacute;pliez ci-dessous le fromage liquide ou le fromage solide et comparez les produits sur l'usage, le go&ucirc;t, le conditionnement et la pr&eacute;paration.</p>
 <!-- ============ FROMAGE LIQUIDE ============ -->
 <table style="width: 100%; margin: 0; box-sizing: border-box;" border="0" cellspacing="0" cellpadding="0" align="center">
@@ -257,7 +259,7 @@
 </tr>
 </tbody>
 </table>
-<h2>Sauce au fromage liquide ou fromage solide&nbsp;?</h2>
+<h2 style="margin-top: 32px;">Sauce au fromage liquide ou fromage solide&nbsp;?</h2>
 <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
 <div style="flex: 1; min-width: 260px;">
 <p>La comparaison montre surtout que la diff&eacute;rence se situe dans la mani&egrave;re dont vous utilisez le fromage. La sauce au fromage liquide ne demande qu'un r&eacute;chauffage&nbsp;: vous la versez ou la dosez directement sur le plat. Id&eacute;ale pour les nachos, les loaded fries et les dips, l&agrave; o&ugrave; vous voulez une couche cr&eacute;meuse et r&eacute;guli&egrave;re. Le fromage solide, vous le faites fondre vous-m&ecirc;me. Les tranches fondent joliment sur un burger ou un croque-monsieur, tandis qu'un m&eacute;lange de fromages gratine bien dor&eacute; sur des nachos. Choisissez donc le liquide pour la rapidit&eacute; et la simplicit&eacute;, ou le solide lorsque le fromage fondu fait partie de la texture et de la pr&eacute;sentation.</p>

@@ -12,17 +12,19 @@
 <p>Kaassaus is niet meer weg te denken uit de streetfoodkeuken. Over nacho's, op een burger of door loaded fries: kaas maakt een gerecht in &eacute;&eacute;n keer af. Voor de keuken is het bovendien makkelijk werken. Je voegt snel extra smaak en beleving toe, zonder zelf een saus te binden of kaas te raspen.</p>
 <p>Maar welk type kaas past het beste bij jouw gerecht en werkwijze? In ons assortiment vind je vloeibare kaassauzen die je warm serveert en vaste kazen om te smelten, te gratineren of te beleggen. Met de keuzehulp hieronder vind je snel de beste optie voor jouw kaart.</p>
 <div style="flex: 0 0 auto; line-height: 0;">&nbsp;</div>
-<div style="width: 100%; max-width: 100%; height: 740px; overflow: hidden; margin: 0 auto 24px;"><iframe style="width: 100%; height: 100%; border: 0; display: block;" src="https://la-streetfood.github.io/kaassaus/" loading="lazy">
+<div id="kaasKeuzehulpVak" style="width: 100%; max-width: 100%; height: 740px; overflow: hidden; margin: 0 auto;"><iframe style="width: 100%; height: 100%; border: 0; display: block;" src="https://la-streetfood.github.io/kaassaus/" loading="lazy">
     </iframe></div>
-<table style="width: 100%; margin: 0; box-sizing: border-box;" border="0" cellspacing="0" cellpadding="4" align="center">
-<tbody>
-<tr>
-<td align="left">
-<h2 style="margin: 2px 0 4px 0;">Bekijk en vergelijk de producten</h2>
-</td>
-</tr>
-</tbody>
-</table>
+<script>
+  // De keuzehulp meldt zijn eigen hoogte. Zonder dit stukje blijft het vak op
+  // de vaste hoogte hieronder staan: te veel lege ruimte op een breed scherm
+  // en een afgesneden knop op een smal scherm.
+  window.addEventListener("message", function (e) {
+    if (e.origin !== "https://la-streetfood.github.io") return;
+    if (!e.data || e.data.type !== "iframe-height") return;
+    document.getElementById("kaasKeuzehulpVak").style.height = e.data.height + "px";
+  });
+</script>
+<h2 style="margin: 32px 0 4px 0;">Bekijk en vergelijk de producten</h2>
 <p style="margin-top: 4px;">Heb je via de keuzehulp een paar passende opties gevonden? Klap hieronder vloeibare of vaste kaas open en vergelijk de producten op toepassing, smaak, verpakking en bereiding.</p>
 <!-- ============ VLOEIBARE KAAS ============ -->
 <table style="width: 100%; margin: 0; box-sizing: border-box;" border="0" cellspacing="0" cellpadding="0" align="center">
@@ -257,7 +259,7 @@
 </tr>
 </tbody>
 </table>
-<h2>Vloeibare kaassaus of vaste kaas?</h2>
+<h2 style="margin-top: 32px;">Vloeibare kaassaus of vaste kaas?</h2>
 <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
 <div style="flex: 1; min-width: 260px;">
 <p>De vergelijking laat vooral zien dat het verschil zit in de manier waarop je de kaas gebruikt. Vloeibare kaassaus hoef je alleen op te warmen en giet of spuit je direct over het gerecht. Ideaal voor nacho's, loaded fries en dips, waar je een romige, gelijkmatige laag wilt. Vaste kaas smelt je zelf. Plakken smelten mooi op een burger of tosti, terwijl een kaasmix goudbruin gratineert over nacho's. Kies dus vloeibaar voor snelheid en gemak, of vast wanneer gesmolten kaas onderdeel is van de bite en presentatie.</p>
