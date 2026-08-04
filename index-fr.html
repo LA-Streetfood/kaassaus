@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="fr-BE">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quel fromage convient à votre établissement ?</title>
+  <meta name="description" content="Découvrez en deux minutes quel fromage ou quelle sauce au fromage de LA Streetfood convient le mieux à votre plat, votre cuisine et votre manière de travailler." />
+  <style>
+    /* Kleuren, lettertype en radius komen uit de CSS van la-streetfood.com,
+       zodat de iframe niet afwijkt van de rest van de site.
+       Open Sans wordt door de site zelf ook niet als webfont geladen; we nemen
+       dezelfde declaratie over, dus dezelfde terugval op het systeemlettertype. */
+    :root{
+      --la-green:#265b45;      /* --bg-color-green */
+      --la-dark:#24513c;       /* --bg-color-bluegreen */
+      --accent:#fbb614;        /* --button-color-yellow */
+      --bluegrey:#f1f4f7;      /* --bg-color-bluegrey */
+      --border-grey:#aaa;      /* --border-color-grey */
+      --ink:#1d211f;
+      --muted:#6f756f;
+      --line:#d9ded8;
+      --radius:10px;           /* kaarten */
+      --radius-btn:5px;        /* knoppen, zoals .button op de site */
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:"Open Sans", sans-serif;
+      color:var(--ink);
+      background:transparent;
+    }
+    h2,h3{font-family:"Open Sans Condensed", "Open Sans", sans-serif}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    /* Geen eigen maximumbreedte: het blok vult de iframe volledig, zodat het
+       precies zo breed is als de tekstkolom van het categorieblok eromheen.
+       De breedte wordt dus in de pagina bepaald, niet hier. */
+    .shell{width:100%;max-width:none;margin:0;padding:0}
+
+    /* ---------- Vragen ---------- */
+    .main-card{
+      background:#ffffff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      overflow:hidden;
+    }
+    .topbar{
+      display:flex;justify-content:space-between;gap:16px;align-items:center;
+      padding:16px 20px;border-bottom:1px solid var(--line);background:white;
+      position:sticky;top:0;z-index:20;
+    }
+    .progress-wrap{flex:1}
+    .progress-label{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:8px}
+    .progress-track{height:8px;background:var(--bluegrey);border-radius:var(--radius-btn);overflow:hidden}
+    .progress-bar{height:100%;width:0;background:var(--la-green);transition:width .35s ease}
+    /* Omlijnd: geen vulling, grijze rand en tekst */
+    .quiet-btn{
+      background:none;border:1px solid var(--border-grey);color:var(--muted);
+      font-weight:700;border-radius:var(--radius-btn);padding:9px 14px;transition:.15s ease;
+    }
+    .quiet-btn:hover{border-color:var(--la-green);color:var(--la-green)}
+    .stage{padding:24px 22px}
+    /* Alle stappen even hoog, zodat het blok niet verspringt. Het echte getal
+       wordt door syncStepHeight() gemeten en hieronder overschreven: de
+       fotostrook is vierkant, dus hoe breder de kolom, hoe hoger het
+       startscherm. Deze 525 px is alleen de startwaarde voordat het script
+       heeft gemeten (en de terugval als JavaScript uitvalt). */
+    .step{display:none;animation:fade .28s ease;min-height:525px}
+    .step.active{display:flex;flex-direction:column}
+    /* De knoppenrij zakt naar de onderkant, zodat die altijd op dezelfde plek staat */
+    .step.active .nav{margin-top:auto}
+    @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .step h2{font-size:clamp(23px,3.2vw,30px);line-height:1.12;margin:0 0 18px}
+    .options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+    .option{
+      position:relative;
+      /* rand altijd 2px, anders verspringt de tekst bij het selecteren */
+      border:2px solid var(--line);background:white;border-radius:var(--radius-btn);
+      padding:14px 34px 14px 14px;min-height:78px;
+      display:flex;gap:11px;align-items:flex-start;
+      transition:.15s ease;text-align:left;
+    }
+    .option:hover{border-color:var(--la-green)}
+    .option.selected{border-color:var(--la-green);background:var(--bluegrey)}
+    .option b{display:block;font-size:15px;margin-bottom:3px;line-height:1.25}
+    .option small{color:var(--muted);font-size:13px;line-height:1.35}
+    .option .check{
+      position:absolute;right:10px;top:10px;width:21px;height:21px;border-radius:50%;
+      background:#e9ece8;display:grid;place-items:center;color:transparent;font-weight:900;font-size:12px;
+    }
+    .option.selected .check{background:var(--la-green);color:white}
+    .hint{
+      margin-top:14px;
+      background:#fff8dc;border:1px solid #f1d879;color:#6f5920;border-radius:var(--radius-btn);padding:10px 12px;
+      font-size:13px;display:none;
+    }
+    .hint.show{display:block}
+    /* De padding, niet de marge, houdt de knoppen van de inhoud af: op de
+       actieve stap wordt margin-top overschreven door auto, en dan zou de
+       knop tegen de onderste fotorij van het startscherm plakken. */
+    .nav{margin-top:22px;padding-top:22px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+    /* rand ook op de groene knop, anders zijn de twee knoppen 2px verschillend hoog */
+    .btn{border:1px solid transparent;border-radius:var(--radius-btn);padding:11px 18px;font-weight:700;font-size:15px;transition:.15s ease}
+    .btn.primary{background:var(--la-green);color:white}
+    .btn.primary:hover{background:var(--la-dark)}
+    /* Terug: geen vulling, grijze rand en tekst */
+    .btn.secondary{background:none;border-color:var(--border-grey);color:var(--muted)}
+    .btn.secondary:hover{border-color:var(--la-green);color:var(--la-green)}
+    .btn:disabled{opacity:.4;cursor:not-allowed}
+
+    /* ---------- Startscherm: de zes productfoto's ---------- */
+    /* Twee rijen van drie, over de volle breedte van het blok */
+    .start-images{
+      display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;
+      margin:20px 0 0;
+    }
+    /* Op het startscherm alleen een rand, geen grijze vulling.
+       Liggend in plaats van vierkant: op de volle breedte zou een vierkante
+       tegel bijna 300 px hoog worden, en met twee rijen erven alle andere
+       stappen die hoogte. De packshots staan gecentreerd, dus ze verliezen
+       niets; ze krijgen alleen ruimte links en rechts. */
+    .start-images .thumb{aspect-ratio:3/2;background:none;border:1px solid var(--line)}
+    /* LA152 is een liggende sfeerfoto: beeldvullend bijsnijden, anders staat
+       hij als klein streepje tussen de uitgeknipte producten */
+    .start-images .thumb-foto img{object-fit:cover;object-position:center;padding:0}
+
+    /* ---------- Resultaat ---------- */
+    .result-intro{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:16px}
+    .result-intro h2{margin:0}
+    .badge{background:var(--accent);color:white;border-radius:var(--radius-btn);padding:7px 11px;font-weight:700;font-size:13px;white-space:nowrap}
+    .results{display:grid;gap:14px}
+    /* Match 2 en 3 naast elkaar */
+    .results-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .result-card{
+      border:1px solid var(--line);background:white;border-radius:var(--radius);padding:18px;
+      position:relative;overflow:hidden;
+      display:grid;grid-template-columns:180px 1fr;gap:18px;align-items:start;
+    }
+    .thumb{
+      background:var(--bluegrey);border:1px solid var(--line);border-radius:var(--radius-btn);
+      aspect-ratio:1/1;display:grid;place-items:center;overflow:hidden;
+    }
+    .thumb img{width:100%;height:100%;object-fit:contain;display:block;padding:6px}
+    .thumb-leeg{font-size:40px;color:#c9d2cb}
+    /* Percentage staat naast de titel: scheelt een hele kolom breedte */
+    .rank{
+      display:flex;align-items:baseline;gap:7px;
+      background:var(--la-green);border-radius:var(--radius-btn);
+      padding:5px 12px;margin-bottom:10px;width:fit-content;
+    }
+    /* Winnaar: linkerkolom met de pil boven de foto. Beide kolommen beginnen
+       bovenaan (align-items:start), dus de pil en het artikelnummer liggen gelijk. */
+    .card-left{display:flex;flex-direction:column;gap:10px}
+    .card-left .rank{margin-bottom:0}
+    .rank .nr{font-size:11px;color:rgba(255,255,255,.75);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+    .rank .percent{font-size:20px;font-weight:700;color:white;line-height:1}
+    .result-card h3{font-size:19px;margin:0 0 8px;line-height:1.2}
+    .artnr{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;margin-bottom:4px}
+    .desc{font-size:14px;line-height:1.5;color:#3f4943}
+
+    /* Match 2 en 3: doorverwijskaartje, dus kleine foto links naast de naam */
+    .result-card.compact{
+      background:#fcfdfe;padding:14px;
+      grid-template-columns:84px 1fr;gap:12px;
+    }
+    .result-card.compact .thumb{height:84px}
+    .result-card.compact h3{font-size:15px;margin:0 0 8px}
+    .result-card.compact .rank{padding:3px 9px;margin-bottom:6px}
+    .result-card.compact .rank .percent{font-size:16px}
+    .why{
+      margin-top:10px;padding:9px 12px;border-radius:var(--radius-btn);
+      background:var(--bluegrey);color:#2c4a3c;line-height:1.45;font-size:13px;font-weight:700;
+    }
+    /* Gele knop met witte tekst, zoals .button op la-streetfood.com */
+    .card-cta{
+      display:inline-flex;align-items:center;justify-content:center;
+      margin-top:14px;min-height:44px;padding:12px 18px;border-radius:var(--radius-btn);
+      background:var(--accent);color:white;
+      text-decoration:none;font-weight:700;font-size:15px;transition:.15s ease;
+    }
+    .card-cta:hover{background:#e5a50e}
+    /* Match 2 en 3: alleen een tekstlink, zodat de gele knop het accent houdt */
+    .card-link{
+      display:inline-block;color:var(--la-green);
+      font-weight:700;font-size:14px;text-decoration:none;
+    }
+    .card-link:hover{text-decoration:underline}
+    .cta-soon{
+      display:inline-block;margin-top:14px;padding:11px 15px;border-radius:var(--radius-btn);
+      background:#fff8dc;border:1px solid #f1d879;color:#6f5920;font-weight:700;font-size:13px;
+    }
+
+    /* ---------- Alle producten ---------- */
+    .all-products{margin-top:18px;background:white;border:1px solid var(--line);border-radius:var(--radius);padding:18px;font-size:15px}
+    .all-products summary{cursor:pointer;font-weight:700;color:var(--la-green)}
+    .product-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+    .product-mini{
+      border:1px solid var(--line);border-radius:var(--radius-btn);padding:14px;
+      display:flex;justify-content:space-between;gap:12px;align-items:center;
+    }
+    .product-mini b{display:block;margin-bottom:4px;font-size:14px}
+    .product-mini small{display:block;color:var(--muted);line-height:1.35;font-size:13px}
+    .mini-pct{
+      flex:0 0 auto;background:var(--bluegrey);color:var(--la-green);
+      border-radius:var(--radius-btn);padding:6px 9px;font-weight:700;font-size:14px;
+    }
+    .product-mini a{display:inline-block;margin-top:7px;color:var(--la-green);font-weight:700;text-decoration:none;font-size:13px}
+    .soon-mini{display:inline-block;margin-top:7px;color:#8a7430;font-weight:700}
+
+    /* Onder 620px staat de iframe-kolom te smal voor twee kaarten naast elkaar */
+    @media (max-width:620px){
+      .stage{padding:20px 16px}
+      .options,.product-grid,.results-row{grid-template-columns:1fr}
+      .topbar{padding:14px 16px}
+      /* Zes foto's naast elkaar wordt te klein op mobiel: twee rijen van drie */
+      .start-images{grid-template-columns:repeat(3,minmax(0,1fr))}
+      /* Foto boven de tekst in plaats van ernaast */
+      .result-card{grid-template-columns:1fr;gap:12px}
+      .result-card .thumb{aspect-ratio:auto;height:170px}
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <main class="main-card">
+      <div class="topbar">
+        <div class="progress-wrap">
+          <div class="progress-label"><span id="progressText">Prêt à commencer</span><span id="progressStep">0%</span></div>
+          <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+        </div>
+        <button class="quiet-btn" id="restartTop" type="button">Recommencer</button>
+      </div>
+
+      <div class="stage">
+        <section class="step active" data-step="0">
+          <h2>Quel fromage convient à votre établissement ?</h2>
+          <div class="start-images" id="startImages"></div>
+          <div class="nav">
+            <span></span>
+            <button class="btn primary" type="button" id="startBtn" data-next>Démarrer le guide →</button>
+          </div>
+        </section>
+
+        <section class="step" data-step="1" data-key="dish">
+          <h2>Pour quel usage cherchez-vous du fromage ?</h2>
+          <div class="options">
+            <button class="option" data-value="nachos"><span><b>Nachos et loaded fries</b><small>Napper généreusement, avec de beaux filaments de fromage ou de la sauce.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="gratin"><span><b>Gratiner au four ou à la salamandre</b><small>Le fromage doit fondre et colorer.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="burger"><span><b>Burgers, croque-monsieur et sandwichs</b><small>Un fromage que l'on goûte et reconnaît.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="fries"><span><b>Snacks, frites et hot-dogs</b><small>Une couche de sauce au fromage chaude, en un seul geste.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="dips"><span><b>Apéritif, dips et partage</b><small>Dip à pain, petite fondue ou plat à partager.</small></span><span class="check">✓</span></button>
+          </div>
+          <div class="nav"><button class="btn secondary" data-prev>← Retour</button><button class="btn primary" data-next disabled>Suivant →</button></div>
+        </section>
+
+        <section class="step" data-step="2" data-key="priorities" data-max="2">
+          <h2>Qu'est-ce qui compte le plus pour vous ?</h2>
+          <div class="options">
+            <button class="option" data-value="cost"><span><b>Coût</b><small>Un bon équilibre entre le prix et le résultat.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="taste"><span><b>Goût</b><small>Pas d'analogue, mais du fromage qui se sent et se goûte.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="easy"><span><b>Rapide et simple</b><small>Peu de manipulations entre la commande et l'assiette.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="quality"><span><b>Qualité</b><small>Un fromage haut de gamme, à l'allure premium.</small></span><span class="check">✓</span></button>
+          </div>
+          <div class="hint" id="maxHint">Vous avez choisi 2 critères. C'est suffisant pour un conseil précis.</div>
+          <div class="nav"><button class="btn secondary" data-prev>← Retour</button><button class="btn primary" data-next disabled>Suivant →</button></div>
+        </section>
+
+        <section class="step" data-step="3" data-key="form">
+          <h2>Cherchez-vous une sauce au fromage ou du fromage solide ?</h2>
+          <div class="options">
+            <button class="option" data-value="sauce"><span><b>Sauce au fromage liquide</b><small>Réchauffer, napper, c'est prêt.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="solid"><span><b>Fromage solide</b><small>Râpé ou en tranches.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="open"><span><b>Le conseil peut en décider</b><small>Les deux me conviennent.</small></span><span class="check">✓</span></button>
+          </div>
+          <div class="nav"><button class="btn secondary" data-prev>← Retour</button><button class="btn primary" data-next disabled>Suivant →</button></div>
+        </section>
+
+        <section class="step" data-step="4" data-key="volume">
+          <h2>Quel volume de fromage utilisez-vous par jour ?</h2>
+          <div class="options">
+            <button class="option" data-value="high"><span><b>Gros volumes et pics d'activité</b><small>Établissement animé, événements ou consommation élevée constante.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="mid"><span><b>Régulier, mais variable</b><small>Tous les jours à la carte, sans pics extrêmes.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="low"><span><b>Petites quantités</b><small>Je veux de la qualité sans perte.</small></span><span class="check">✓</span></button>
+          </div>
+          <div class="nav"><button class="btn secondary" data-prev>← Retour</button><button class="btn primary" data-next disabled>Suivant →</button></div>
+        </section>
+
+        <section class="step" data-step="5" data-key="equipment">
+          <h2>Comment souhaitez-vous travailler pendant le service ?</h2>
+          <div class="options">
+            <button class="option" data-value="pan"><span><b>Grande casserole prête au bain-marie</b><small>Réchauffer une seule fois et puiser pendant tout le service.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="bottle"><span><b>Au flacon souple</b><small>Flacon chaud au bain-marie, puis directement sur le plat.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="portion"><span><b>Réchauffer par portion</b><small>Sachet à l'eau chaude ou au micro-ondes, juste ce dont vous avez besoin.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="oven"><span><b>Faire fondre sur le plat</b><small>Le fromage par-dessus, puis au four, à la salamandre ou au gril.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="flex"><span><b>Plusieurs méthodes possibles</b><small>La préparation ne doit pas limiter mon choix.</small></span><span class="check">✓</span></button>
+          </div>
+          <div class="nav"><button class="btn secondary" data-prev>← Retour</button><button class="btn primary" data-next disabled>Suivant →</button></div>
+        </section>
+
+        <section class="step" data-step="6" data-key="flavour">
+          <h2>Quel goût recherchez-vous ?</h2>
+          <div class="options">
+            <button class="option" data-value="mild"><span><b>Doux et crémeux</b><small>Accessible à tous, sans piquant prononcé.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="pittig"><span><b>Relevé</b><small>Jalapeño ou piments mexicains, avec un piquant net.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="vol"><span><b>Corsé et affiné</b><small>Du vrai cheddar qui se sent et se goûte.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="natuurlijk"><span><b>Naturel et artisanal</b><small>Comme si le chef l'avait préparé lui-même.</small></span><span class="check">✓</span></button>
+          </div>
+          <div class="nav"><button class="btn secondary" data-prev>← Retour</button><button class="btn primary" data-next disabled>Voir mon résultat →</button></div>
+        </section>
+
+        <section class="step" data-step="7" id="resultStep">
+          <div class="result-intro">
+            <div>
+              <h2>Vos meilleures correspondances</h2>
+            </div>
+            <span class="badge">Top 3</span>
+          </div>
+          <div class="results" id="results"></div>
+
+          <details class="all-products">
+            <summary id="allProductsSummary">Voir tous les produits avec votre pourcentage de correspondance</summary>
+            <div class="product-grid" id="productGrid"></div>
+          </details>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    /* =======================================================================
+       PRODUCT-URL'S
+       LET OP: LA152 heeft nog geen productpagina (nieuw product).
+       Zodra die live staat, vervang je de "#" hieronder door de echte URL.
+       Zolang er "#" staat, wordt LA152 zonder knop getoond.
+       ======================================================================= */
+    const PRODUCT_URLS = {
+      la1000: "https://www.la-streetfood.com/be/fr/le-fromage-tex-mex-rape-de-cheddar-et-gouda-mexicain-est-parfait-pour-les-nachos-et-burritos-la1000-2",
+      la1010: "https://www.la-streetfood.com/be/fr/vrai-cheddar-irlandais-tranches-frais-la1010-1",
+      la155:  "https://www.la-streetfood.com/be/fr/sauce-de-marque-cheddar-fromage-fromage-pinata-la155-1",
+      la156:  "https://www.la-streetfood.com/be/fr/la156-1-jalapeno-cheese-sauce-pinata-la156-1",
+      la157:  "https://www.la-streetfood.com/be/fr/sauce-au-fromage-cheddar-dans-un-flacon-a-presser-pratique-la157",
+      la152:  "#"   // TODO: Authentic Mexican Cheese Sauce 400 g — nog geen productpagina
+    };
+
+    function hasUrl(id){ return PRODUCT_URLS[id] && PRODUCT_URLS[id] !== "#"; }
+
+    /* =======================================================================
+       PRODUCTAFBEELDINGEN
+       Deze bestanden moeten in dezelfde map staan als dit HTML-bestand.
+       Een lege waarde geeft automatisch een neutraal vlak in plaats van een
+       gebroken afbeelding.
+       ======================================================================= */
+    const PRODUCT_IMAGES = {
+      la1000: "mexicaanse-nacho-kaas-mix-la-streetfood.png",
+      la1010: "ierse-cheddar-kaasplakken-voor-hamburgers-la-streetfood.png",
+      la155:  "cheddar-cheese-sauce-3-kg-horeca-la-streetfood.png",
+      la156:  "jalapeno-cheese-sauce-in-blik-horeca-la-streetfood.jpg",
+      la157:  "cheddar-cheese-saus-knijpfles-voor-nacho-en-burger-la-streetfood.jpg",
+      la152:  "authentic-mexican-cheese-sauce-nachos-la-streetfood.jpg"
+    };
+
+    // Geen loading="lazy": in een iframe waarvan de ouder de hoogte bepaalt,
+    // laden lazy afbeeldingen soms nooit. Het zijn er maar drie per scherm.
+    function thumb(p, extraClass){
+      const cls = extraClass ? `thumb ${extraClass}` : "thumb";
+      return PRODUCT_IMAGES[p.id]
+        ? `<div class="${cls}"><img src="${PRODUCT_IMAGES[p.id]}" alt="${p.name}"></div>`
+        : `<div class="${cls} thumb-leeg" aria-hidden="true"></div>`;
+    }
+
+    const products = [
+      {
+        id:"la1000", art:"LA1000", type:"solid",
+        name:"MexMix Gouda-Cheddar",
+        tagline:"Le meilleur mélange de fromages pour vos nachos.",
+        desc:"Un mélange équilibré de Gouda et de Cheddar, développé pour la cuisine Tex-Mex. Reste onctueux et élastique : votre client ne retire pas une plaque dure de son plat.",
+        base:5, tags:["Mélange de fromages","Nachos","Gratiner","Vrai goût de fromage"],
+        scores:{cost:7,taste:8,easy:8,quality:6}
+      },
+      {
+        id:"la1010", art:"LA1010", type:"solid",
+        name:"Real Irish Cheddar",
+        tagline:"Du vrai cheddar irlandais pour un burger premium.",
+        desc:"Fabriqué à partir de lait de vache irlandais et affiné au minimum sept mois. Fond joliment sur le burger tout en restant reconnaissable comme du vrai fromage. 25 tranches prédécoupées par paquet.",
+        base:5, tags:["Tranches de 20 g","Burger premium","Portion fixe","Affiné 7 mois"],
+        scores:{cost:5,taste:9,easy:9,quality:9}
+      },
+      {
+        id:"la155", art:"LA155", type:"sauce",
+        name:"Piñata Cheddar Cheese Sauce",
+        tagline:"La sauce au fromage américaine des stades et des cinémas.",
+        desc:"Fabriquée dans le Wisconsin. Riche en goût, mais moins salée que beaucoup d'autres sauces au fromage américaines et sans arrière-goût chimique. Halal.",
+        base:5, tags:["Boîte 3 kg","Gros volumes","Américain","Halal"],
+        scores:{cost:8,taste:7,easy:8,quality:5}
+      },
+      {
+        id:"la156", art:"LA156", type:"sauce",
+        name:"Piñata Jalapeño Cheddar Cheese Sauce",
+        tagline:"La même expérience américaine, avec le goût du jalapeño.",
+        desc:"Du cheddar corsé associé à une purée de jalapeño et du poivron vert. Le piquant est bien présent, mais le goût du fromage garde le premier rôle. Pas de piments à couper, aucune manipulation supplémentaire.",
+        base:4, tags:["Boîte 3 kg","Relevé","Gros volumes","Plus de goût immédiatement"],
+        scores:{cost:8,taste:7,easy:8,quality:5}
+      },
+      {
+        id:"la157", art:"LA157", type:"sauce",
+        name:"Imokilly Sauce au Cheddar Irlandais",
+        tagline:"Notre sauce au fromage la plus haut de gamme, avec la facilité du flacon souple.",
+        desc:"47 % de vrai fromage, dont 26 % de cheddar irlandais, plus du beurre pour davantage d'onctuosité. Flacon au bain-marie et dosage direct. Huit flacons par carton : vous n'ouvrez que ce dont vous avez besoin.",
+        base:5, tags:["47 % de fromage","Flacon 950 g","Premium","Dosage précis"],
+        scores:{cost:4,taste:10,easy:9,quality:10}
+      },
+      {
+        id:"la152", art:"LA152", type:"sauce",
+        name:"Authentic Mexican Cheese Sauce",
+        tagline:"Comme une sauce que le chef aurait préparée lui-même.",
+        desc:"Goût de fromage riche, relevé aux piments mexicains, avec une allure artisanale. Surgelée en sachets de 400 g : réchauffer à l'eau chaude ou au micro-ondes et c'est prêt.",
+        base:4, tags:["Sachet 400 g","Artisanal","Peu de perte","Surgelé"],
+        scores:{cost:5,taste:9,easy:8,quality:8}
+      }
+    ];
+
+    const state = {step:0, answers:{}};
+    const steps = [...document.querySelectorAll(".step")];
+    const totalQuestions = 6;
+    const resultIndex = 7;
+
+    function updateProgress(){
+      const pct = state.step === 0 ? 0 : Math.min(100, Math.round((Math.min(state.step, totalQuestions)/totalQuestions)*100));
+      document.getElementById("progressBar").style.width = pct+"%";
+      document.getElementById("progressStep").textContent = pct+"%";
+      document.getElementById("progressText").textContent =
+        state.step === 0 ? "Prêt à commencer" :
+        state.step <= totalQuestions ? `Question ${state.step} sur ${totalQuestions}` : "Votre conseil est prêt";
+    }
+
+    function showStep(n){
+      state.step=n;
+      steps.forEach(s=>s.classList.toggle("active", Number(s.dataset.step)===n));
+      updateProgress();
+      window.scrollTo({top:document.querySelector(".main-card").offsetTop-8,behavior:"smooth"});
+      if(n===resultIndex){ renderResults(); syncStepHeight(); }
+    }
+
+    document.querySelectorAll("[data-next]").forEach(btn=>btn.addEventListener("click",()=>showStep(state.step+1)));
+    document.querySelectorAll("[data-prev]").forEach(btn=>btn.addEventListener("click",()=>showStep(state.step-1)));
+
+    document.querySelectorAll(".step[data-key]").forEach(step=>{
+      const key=step.dataset.key;
+      const max=Number(step.dataset.max||1);
+      step.querySelectorAll(".option").forEach(opt=>{
+        opt.addEventListener("click",()=>{
+          if(max===1){
+            step.querySelectorAll(".option").forEach(o=>o.classList.remove("selected"));
+            opt.classList.add("selected");
+            state.answers[key]=opt.dataset.value;
+          }else{
+            const selected=step.querySelectorAll(".option.selected");
+            if(opt.classList.contains("selected")){
+              opt.classList.remove("selected");
+            }else if(selected.length<max){
+              opt.classList.add("selected");
+            }
+            state.answers[key]=[...step.querySelectorAll(".option.selected")].map(o=>o.dataset.value);
+            const hint=document.getElementById("maxHint");
+            if(hint) hint.classList.toggle("show", state.answers[key].length===max);
+          }
+          const next=step.querySelector("[data-next]");
+          const val=state.answers[key];
+          next.disabled=Array.isArray(val)?val.length===0:!val;
+        });
+      });
+    });
+
+    function add(scoreMap,id,pts){ scoreMap[id]=(scoreMap[id]||0)+pts; }
+
+    function calculate(){
+      const a=state.answers;
+      const scores={};
+      products.forEach(p=>scores[p.id]=p.base);
+
+      (a.priorities||[]).forEach(pref=>{
+        products.forEach(p=>add(scores,p.id,p.scores[pref]||0));
+      });
+
+      const dishMap={
+        nachos:{la1000:20, la155:14, la156:12, la157:10, la152:8},
+        gratin:{la1000:22, la1010:12, la157:5},
+        burger:{la1010:22, la157:12, la155:7, la156:7},
+        fries:{la155:16, la156:15, la157:13, la1000:6},
+        dips:{la152:22, la157:11, la155:8, la156:8}
+      };
+      Object.entries(dishMap[a.dish]||{}).forEach(([id,p])=>add(scores,id,p));
+
+      // Vorm is een harde filter
+      if(a.form==="sauce" || a.form==="solid"){
+        products.forEach(p=>{ if(p.type!==a.form) scores[p.id]=-999; });
+      }
+
+      const volumeMap={
+        high:{la155:18, la156:15, la1000:9, la1010:6, la157:4},
+        mid:{la157:11, la1010:11, la1000:10, la155:8, la156:8, la152:6},
+        low:{la152:22, la157:11, la1010:8}
+      };
+      Object.entries(volumeMap[a.volume]||{}).forEach(([id,p])=>add(scores,id,p));
+
+      const equipmentMap={
+        pan:{la155:16, la156:16, la157:6},
+        bottle:{la157:22},
+        portion:{la152:22},
+        oven:{la1000:18, la1010:15},
+        flex:{la157:7, la155:6, la156:6, la1000:6, la1010:6, la152:6}
+      };
+      Object.entries(equipmentMap[a.equipment]||{}).forEach(([id,p])=>add(scores,id,p));
+
+      // Smaak volgens het dossier: LA155 romig en mild, LA156 romig en pittig,
+      // LA157 rijk en premium, LA152 Mexicaans en ambachtelijk,
+      // LA1000 gouda-cheddar, LA1010 volle Ierse cheddar (7 maanden gerijpt)
+      const flavourMap={
+        mild:{la155:24, la1000:13, la157:6},
+        pittig:{la156:28, la152:13},
+        vol:{la1010:24, la157:22, la1000:8},
+        natuurlijk:{la152:28, la157:11, la1010:9}
+      };
+      Object.entries(flavourMap[a.flavour]||{}).forEach(([id,p])=>add(scores,id,p));
+
+      const valid=products.filter(p=>scores[p.id]>-900).sort((x,y)=>scores[y.id]-scores[x.id]);
+      const max=valid[0] ? scores[valid[0].id] : 1;
+      return valid.map((p,i)=>{
+        const raw=scores[p.id];
+        let pct=Math.round(72+(raw/max)*24-(i*2));
+        pct=Math.max(58,Math.min(96,pct));
+        return {...p, raw, pct};
+      });
+    }
+
+    // Eén productspecifieke reden. De oude "Scoort sterk op X"-regels zijn eruit:
+    // die herhaalden alleen het antwoord dat de gast zelf net had gegeven.
+    const reasonMap={
+      la1000:"Reste onctueux et élastique : de beaux filaments et une répartition régulière sur le plat.",
+      la1010:"Chaque burger reçoit exactement 20 grammes de fromage. Travail rapide et prix de revient clair.",
+      la155:"Reste longtemps souple au bain-marie. Elle épaissit ? Un peu d'eau et un coup de fouet pour la relisser.",
+      la156:"Onctuosité, couleur et piquant dans une seule sauce. Pas de piments à couper ni de garnitures à préparer.",
+      la157:"47 % de vrai fromage avec la rapidité d'un flacon souple. Qualité premium sans travail supplémentaire en cuisine.",
+      la152:"Des sachets de 400 grammes : vous n'utilisez que ce dont vous avez besoin, donc très peu de perte."
+    };
+
+    function renderResults(){
+      const all=calculate();
+      const top=all.slice(0,3);
+
+      // De winnaar krijgt een gele knop, 2 en 3 een tekstlink
+      function cta(p){
+        return hasUrl(p.id)
+          ? `<a class="card-cta" href="${PRODUCT_URLS[p.id]}" target="_top">Voir le produit et commander →</a>`
+          : `<div class="cta-soon">Nouveau produit. Contactez-nous pour le prix et la disponibilité.</div>`;
+      }
+      function ctaLink(p){
+        return hasUrl(p.id)
+          ? `<a class="card-link" href="${PRODUCT_URLS[p.id]}" target="_top">Voir le produit et commander →</a>`
+          : `<span class="soon-mini">Nouveau produit — bientôt en ligne</span>`;
+      }
+
+      // Nummer 1 krijgt het volledige verhaal met de foto ernaast.
+      // Links de pil met de foto eronder, rechts de tekst. Doordat beide
+      // kolommen bovenaan beginnen, liggen de pil en het artikelnummer gelijk.
+      function fullCard(p, i){
+        return `
+        <article class="result-card">
+          <div class="card-left">
+            <div class="rank"><span class="nr">Match ${i+1}</span><span class="percent">${p.pct}%</span></div>
+            ${thumb(p)}
+          </div>
+          <div>
+            <div class="artnr">${p.art}</div>
+            <h3>${p.name}</h3>
+            <div class="desc">${p.desc}</div>
+            <div class="why">${reasonMap[p.id]}</div>
+            ${cta(p)}
+          </div>
+        </article>`;
+      }
+
+      // 2 en 3 staan naast elkaar: kleine foto links, naam en tekstlink rechts
+      function compactCard(p, i){
+        return `
+        <article class="result-card compact">
+          ${thumb(p)}
+          <div>
+            <div class="rank"><span class="nr">Match ${i+1}</span><span class="percent">${p.pct}%</span></div>
+            <div class="artnr">${p.art}</div>
+            <h3>${p.name}</h3>
+            ${ctaLink(p)}
+          </div>
+        </article>`;
+      }
+
+      const rest = top.slice(1);
+      document.getElementById("results").innerHTML =
+        (top[0] ? fullCard(top[0], 0) : "") +
+        (rest.length ? `<div class="results-row">${rest.map((p,i)=>compactCard(p,i+1)).join("")}</div>` : "");
+
+      // Bij een filter op saus of vaste kaas blijven er minder dan 6 over
+      document.getElementById("allProductsSummary").textContent =
+        all.length === products.length
+          ? `Voir les ${products.length} produits avec votre pourcentage de correspondance`
+          : `Voir les ${all.length} produits correspondants avec votre pourcentage`;
+
+      document.getElementById("productGrid").innerHTML=all.map(p=>`
+        <div class="product-mini">
+          <div>
+            <b>${p.art} ${p.name}</b>
+            <small>${p.tagline}</small>
+            ${hasUrl(p.id)
+              ? `<a href="${PRODUCT_URLS[p.id]}" target="_top">Voir le produit →</a>`
+              : `<small class="soon-mini">Nouveau produit — bientôt en ligne</small>`}
+          </div>
+          <div class="mini-pct">${p.pct}%</div>
+        </div>
+      `).join("");
+    }
+
+    function restart(){
+      state.step=0;state.answers={};
+      document.querySelectorAll(".option").forEach(o=>o.classList.remove("selected"));
+      document.querySelectorAll("[data-next]").forEach(b=>{ if(b.closest(".step")?.dataset.step!=="0") b.disabled=true; });
+      document.getElementById("maxHint").classList.remove("show");
+      showStep(0);
+    }
+    document.getElementById("restartTop").addEventListener("click",restart);
+
+    // Alle zes producten op het startscherm, uit dezelfde bron als de resultaten.
+    // Van LA152 hebben we alleen een liggende sfeerfoto en geen uitgeknipte
+    // packshot; die vullen we het vierkant beeldvullend in plaats van passend.
+    document.getElementById("startImages").innerHTML =
+      products.map(p => thumb(p, p.id === "la152" ? "thumb-foto" : "")).join("");
+
+    /* =======================================================================
+       GELIJKE HOOGTE VOOR ALLE STAPPEN
+       De fotostrook op het startscherm is vierkant, dus die schaalt mee met de
+       breedte van de kolom waarin de iframe staat. Een vast getal in de CSS
+       klopt dan maar bij één breedte. We meten daarom de langste stap en geven
+       die hoogte aan alle stappen. Meten gebeurt met min-height op nul, anders
+       meten we onze eigen vorige uitkomst terug.
+       ======================================================================= */
+    function syncStepHeight(){
+      const hoogste = Math.max(...steps.map(s=>{
+        // Inactieve stappen staan op display:none en meten dan 0. We geven ze
+        // daarom kort de active-class: dan meten we precies de layout die de
+        // stap straks krijgt, inclusief .nav{margin-top:auto}. Het gebeurt
+        // binnen één frame, dus de gebruiker ziet er niets van. De animatie
+        // staat tijdens het meten uit, anders start de fade opnieuw.
+        const wasActief=s.classList.contains("active");
+        s.style.animation="none";
+        s.style.minHeight="0px";
+        if(!wasActief) s.classList.add("active");
+        const h=s.scrollHeight;
+        if(!wasActief) s.classList.remove("active");
+        s.style.animation="";
+        return h;
+      }));
+      steps.forEach(s=>s.style.minHeight=Math.ceil(hoogste)+"px");
+    }
+
+    // Bij het laden staan de productfoto's er nog niet, en die bepalen de
+    // hoogte van het startscherm. Vandaar ook een meting na window.load.
+    syncStepHeight();
+    window.addEventListener("load", syncStepHeight);
+
+    // Bij het draaien van een tablet of het verslepen van een venster verandert
+    // de kolombreedte, en dus de hoogte van de vierkante foto's.
+    let hersyncTimer;
+    window.addEventListener("resize", ()=>{
+      clearTimeout(hersyncTimer);
+      hersyncTimer=setTimeout(syncStepHeight, 150);
+    });
+
+    updateProgress();
+  </script>
+
+  <script>
+    function sendHeight(){
+      const height = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+      if(window.parent){
+        window.parent.postMessage({type:"iframe-height", height:height}, "https://www.la-streetfood.com");
+      }
+    }
+    window.addEventListener("load", sendHeight);
+    new ResizeObserver(sendHeight).observe(document.body);
+  </script>
+</body>
+</html>
