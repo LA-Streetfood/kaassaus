@@ -139,11 +139,21 @@
       position:relative;overflow:hidden;
       display:grid;grid-template-columns:180px 1fr;gap:18px;align-items:start;
     }
+    /* De packshots staan zelf op wit, dus het tegelvlak ook. Met de blauwgrijze
+       vulling van de kaaspagina zou je de witte foto als rechthoek in de tegel
+       zien liggen, met gekleurde banen erboven en eronder. */
     .thumb{
-      background:var(--bluegrey);border:1px solid var(--line);border-radius:var(--radius-btn);
-      aspect-ratio:1/1;display:grid;place-items:center;overflow:hidden;
+      background:#ffffff;border:1px solid var(--line);border-radius:var(--radius-btn);
+      aspect-ratio:1/1;position:relative;overflow:hidden;
     }
-    .thumb img{width:100%;height:100%;object-fit:contain;display:block;padding:6px}
+    /* Zonder foto valt de tegel terug op het rustige vlak van de kaaspagina */
+    .thumb-leeg{background:var(--bluegrey)}
+    /* De afbeelding wordt absoluut in de tegel gelegd. Met width/height:100% in
+       een grid ging dit mis: de hoogte van de tegel komt uit aspect-ratio, en
+       een percentagehoogte telt dan niet, waardoor een staande packshot op
+       breedte werd geschaald, onder de tegel uitstak en werd afgesneden. Door
+       inset ligt de hoogte wel vast en past object-fit hem netjes in. */
+    .thumb img{position:absolute;inset:6px;width:calc(100% - 12px);height:calc(100% - 12px);object-fit:contain;display:block}
     .thumb-leeg{font-size:40px;color:#c9d2cb}
     /* Percentage staat naast de titel: scheelt een hele kolom breedte */
     .rank{
@@ -359,15 +369,15 @@
        PRODUCTAFBEELDINGEN
        Deze bestanden moeten in dezelfde map staan als dit HTML-bestand.
        Een lege waarde geeft automatisch een neutraal vlak in plaats van een
-       gebroken afbeelding, dus de keuzehulp werkt ook zonder foto's.
-       TODO: zet de packshots in de map en vul de bestandsnamen hieronder in.
+       gebroken afbeelding, dus de keuzehulp werkt ook zonder foto.
+       LA746 is nieuw en heeft nog geen packshot; die staat daarom leeg.
        ======================================================================= */
     const PRODUCT_IMAGES = {
-      la751:  "",
-      la7582: "",
-      la753:  "",
-      la750:  "",
-      la746:  ""
+      la751:  "guacamole-uhp-authentic-zakken-la-streetfood.png",
+      la7582: "spuitzak-guacamole-la-streetfood.png",
+      la753:  "guacamole-cups-la-streetfood.jpg",
+      la750:  "guacamole-bakjes-la-streetfood.png",
+      la746:  ""   // TODO: nog geen foto van de tub van 900 gram uit Peru
     };
 
     // Geen loading="lazy": in een iframe waarvan de ouder de hoogte bepaalt,
