@@ -72,6 +72,8 @@
     .step.active .nav{margin-top:auto}
     @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
     .step h2{font-size:clamp(23px,3.2vw,30px);line-height:1.12;margin:0 0 18px}
+    /* Alleen op het startscherm: uitleg onder de kop, boven de fotostrook */
+    .lead{margin:-8px 0 4px;color:var(--muted);font-size:15px;line-height:1.5;max-width:62ch}
     .options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
     .option{
       position:relative;
@@ -235,6 +237,7 @@
       <div class="stage">
         <section class="step active" data-step="0">
           <h2>Welke guacamole past bij jouw zaak?</h2>
+          <p class="lead">Beantwoord zeven korte vragen en ontdek welke guacamole het beste bij jouw keuken past. Kies steeds het antwoord dat het meest van toepassing is.</p>
           <div class="start-images" id="startImages"></div>
           <div class="nav">
             <span></span>
@@ -242,73 +245,80 @@
           </div>
         </section>
 
-        <section class="step" data-step="1" data-key="dish">
-          <h2>Waar wil je de guacamole voor gebruiken?</h2>
+        <section class="step" data-step="1" data-key="volume">
+          <h2>Hoeveel guacamole gebruik je gemiddeld?</h2>
           <div class="options">
-            <button class="option" data-value="nachos"><span><b>Nacho's en loaded fries</b><small>Royaal toppen of een flinke dip ernaast.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="hapjes"><span><b>Hapjes, borrel en walking dinner</b><small>In korte tijd veel bordjes voorzien van een toef.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="burger"><span><b>Burgers, wraps, broodjes en bowls</b><small>Een stevige laag die op het gerecht blijft liggen.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="takeaway"><span><b>Bezorging, take-out en kant-en-klaar</b><small>De guacamole moet groen blijven tot bij de gast.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="dip"><span><b>Dippen en sharing aan tafel</b><small>Een royale bak guacamole om te delen.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="weinig"><span><b>Weinig, minder dan 500 gram per week</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="middel"><span><b>Redelijk wat, een paar kilo per week</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="veel"><span><b>Heel veel, meerdere kilo’s per dag</b></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
         </section>
 
-        <section class="step" data-step="2" data-key="priorities" data-max="2">
-          <h2>Wat is voor jou het belangrijkst?</h2>
+        <section class="step" data-step="2" data-key="dish">
+          <h2>Waar gebruik je guacamole vooral bij?</h2>
           <div class="options">
-            <button class="option" data-value="cost"><span><b>Kosten</b><small>Een goede balans tussen prijs en kwaliteit.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="taste"><span><b>Smaak</b><small>Guacamole die proeft als vers gemaakt van rijpe avocado's.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="easy"><span><b>Snel en makkelijk</b><small>Weinig handelingen tussen bestelling en bord.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="quality"><span><b>Kwaliteit</b><small>100% Hass, HPP bereid en clean label.</small></span><span class="check">✓</span></button>
-          </div>
-          <div class="hint" id="maxHint">Je hebt 2 punten gekozen. Dat is genoeg voor een scherp advies.</div>
-          <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
-        </section>
-
-        <section class="step" data-step="3" data-key="pack">
-          <h2>Hoe wil je de guacamole doseren?</h2>
-          <div class="options">
-            <button class="option" data-value="portie"><span><b>In vaste porties</b><small>Spuiten of een kant-en-klaar cupje: elk gerecht krijgt evenveel.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="schep"><span><b>Zelf scheppen</b><small>Uit een zak of tub, jij bepaalt per gerecht de hoeveelheid.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="open"><span><b>Dat mag het advies bepalen</b><small>Ik sta open voor allebei.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="nachos"><span><b>Nacho’s en loaded fries</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="hapjes"><span><b>Hapjes en borrelgerechten</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="burger"><span><b>Burgers, wraps en sandwiches</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="salade"><span><b>Bowls en salades</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="bezorging"><span><b>Bezorging, take-away en catering</b></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
         </section>
 
-        <section class="step" data-step="4" data-key="volume">
-          <h2>Hoeveel guacamole draai je per dag?</h2>
+        <section class="step" data-step="3" data-key="puur">
+          <h2>Hoe belangrijk vind je een korte ingrediëntenlijst?</h2>
           <div class="options">
-            <button class="option" data-value="high"><span><b>Grote volumes en pieken</b><small>Drukke zaak, evenementen of hoge omloopsnelheid.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="mid"><span><b>Regelmatig, maar wisselend</b><small>Dagelijks op de kaart, geen extreme pieken.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="low"><span><b>Kleine hoeveelheden</b><small>Ik wil kwaliteit zonder derving.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="strikt"><span><b>Heel belangrijk: alleen avocado, ui, koriander en zout</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="liefst"><span><b>Ik kies graag voor een pure guacamole, maar dit is niet doorslaggevend</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="losjes"><span><b>Minder belangrijk, zolang de guacamole goed smaakt en prettig werkt</b></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
         </section>
 
-        <section class="step" data-step="5" data-key="timing">
-          <h2>Hoeveel tijd zit er tussen opmaken en eten?</h2>
+        <section class="step" data-step="4" data-key="prijs">
+          <h2>Wat vind je het belangrijkste bij een guacamole?</h2>
           <div class="options">
-            <button class="option" data-value="direct"><span><b>Direct serveren</b><small>Vanuit de keuken zo naar de tafel.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="kort"><span><b>Een half uur tot een uur</b><small>Afhalen, foodcorner of een buffet.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="lang"><span><b>Uren</b><small>Bezorging, vitrine of kant-en-klare maaltijden.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="flex"><span><b>Wisselt per gerecht</b><small>Bij ons komt het allemaal voorbij.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="kwaliteit"><span><b>De kwaliteit, daar mag de guacamole best wat meer voor kosten</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="balans"><span><b>Een goede balans tussen kwaliteit en prijs</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="prijs"><span><b>Een scherpe prijs en zoveel mogelijk marge</b></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
         </section>
 
-        <section class="step" data-step="6" data-key="flavour">
-          <h2>Welke smaak en structuur zoek je?</h2>
+        <section class="step" data-step="5" data-key="open">
+          <h2>Hoe snel gebruik je een geopende verpakking?</h2>
           <div class="options">
-            <button class="option" data-value="fijn"><span><b>Fijn en romig</b><small>Smeuïg en glad, mooi strak op het bord.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="chunky"><span><b>Grof en chunky</b><small>Stukjes avocado en een ambachtelijke uitstraling.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="puur"><span><b>Puur en clean label</b><small>Alleen avocado, ui, koriander en zout.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="naturel"><span><b>Naturel en breed inzetbaar</b><small>Toegankelijke smaak die overal bij past.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="zelfdedag"><span><b>Die gaat meestal dezelfde dag op</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="volgendedag"><span><b>Soms gebruiken we de guacamole de volgende dag opnieuw</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="derving"><span><b>Dat wisselt sterk, dus we willen vooral zo min mogelijk weggooien</b></span><span class="check">✓</span></button>
+          </div>
+          <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
+        </section>
+
+        <section class="step" data-step="6" data-key="structuur">
+          <h2>Welke structuur zoek je?</h2>
+          <div class="options">
+            <button class="option" data-value="glad"><span><b>Glad en romig voor een strakke toef</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="grof"><span><b>Stevig en chunky om met een lepel te scheppen</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="geenvoorkeur"><span><b>Ik heb geen duidelijke voorkeur</b></span><span class="check">✓</span></button>
+          </div>
+          <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
+        </section>
+
+        <section class="step" data-step="7" data-key="werkwijze">
+          <h2>Welke manier van werken past het beste bij jouw keuken?</h2>
+          <div class="options">
+            <button class="option" data-value="snel"><span><b>Snel veel gerechten achter elkaar opmaken</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="zelf"><span><b>Per gerecht zelf de juiste hoeveelheid bepalen</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="porties"><span><b>Werken met vaste porties en grip op de kostprijs</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="geenvoorkeur"><span><b>Geen specifieke voorkeur, laat de test mij adviseren</b></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Bekijk mijn match →</button></div>
         </section>
 
-        <section class="step" data-step="7" id="resultStep">
+        <section class="step" data-step="8" id="resultStep">
           <div class="result-intro">
             <div>
               <h2>Jouw beste matches</h2>
@@ -371,51 +381,46 @@
 
     const products = [
       {
-        id:"la751", art:"LA751", type:"schep",
+        id:"la751", art:"LA751",
         name:"Guacamole Pulp Authentic",
         tagline:"Het enige echte alternatief voor verse avocado's.",
         desc:"100% Mexicaanse Hass-avocado's, alleen geplukt als ze echt rijp zijn. HPP bereid en clean label: vier ingrediënten, namelijk avocado, ui, koriander en zout. Geen xanthaangom en geen ascorbinezuur. Zakken van 1 kilo.",
-        base:5, tags:["Zak 1 kg","100% Hass","HPP","4 ingrediënten"],
-        scores:{cost:5,taste:10,easy:7,quality:10}
+        tags:["Zak 1 kg","100% Hass","HPP","4 ingrediënten"]
       },
       {
-        id:"la7582", art:"LA7582", type:"portie",
+        id:"la7582", art:"LA7582",
         name:"Spuitzak Guacamole",
         tagline:"De snelste guacamole van de horeca.",
         desc:"Zakken van 500 gram waarmee je 25 hapjes in seconden van een toef voorziet. HPP bereid, dus ongeopend 30 dagen goed in de koeling. Lucht eruit, knijpertje erop en de tweede dag is hij nog vers en groen.",
-        base:5, tags:["Spuitzak 500 g","Snel toeven","HPP","Geen derving"],
-        scores:{cost:6,taste:9,easy:10,quality:9}
+        tags:["Spuitzak 500 g","Snel toeven","HPP","Geen derving"]
       },
       {
-        id:"la753", art:"LA753", type:"portie",
+        id:"la753", art:"LA753",
         name:"Guacamole Cups",
         tagline:"Kant-en-klaar geportioneerd, altijd groen.",
         desc:"Cupjes van 55 gram: genoeg om royaal te dippen, maar niet zo veel dat je overhoudt. Door de HPP bereiding zeker 30 dagen goed in de koeling. Dertig cupjes liggen binnen een minuut op dertig gerechten.",
-        base:5, tags:["Cup 55 g","Portion control","HPP","Bezorging en take-out"],
-        scores:{cost:5,taste:8,easy:10,quality:8}
+        tags:["Cup 55 g","Portion control","HPP","Bezorging en take-out"]
       },
       {
-        id:"la750", art:"LA750", type:"schep",
+        id:"la750", art:"LA750",
         name:"Guacamole Tub 500 g Mexico",
         tagline:"De klassieke chunky guacamole in een afsluitbare tub.",
         desc:"In Mexico gemaakt van Hass-avocado's en niet HPP-behandeld, waardoor hij grover van structuur is. Blijft goed liggen op nacho's, burgers en broodjes. Scheppen met een lepel, deksel erop en terug de koeling in.",
-        base:5, tags:["Tub 500 g","Chunky","Mexico","Afsluitbaar"],
-        scores:{cost:7,taste:8,easy:8,quality:7}
+        tags:["Tub 500 g","Chunky","Mexico","Afsluitbaar"]
       },
       {
-        id:"la746", art:"LA746", type:"schep",
+        id:"la746", art:"LA746",
         name:"Guacamole Tub 900 g Peru",
         tagline:"De prijsbewuste keuze voor grootverbruikers.",
         desc:"Stevige, chunky guacamole met een naturel smaak, geproduceerd in Peru. Door het productieland, de grotere verpakking en het feit dat hij niet HPP-behandeld is, kunnen we hem extra scherp aanbieden. Nieuw in het assortiment.",
-        base:4, tags:["Tub 900 g","Peru","Scherpe prijs","Grootverbruik"],
-        scores:{cost:10,taste:7,easy:8,quality:6}
+        tags:["Tub 900 g","Peru","Scherpe prijs","Grootverbruik"]
       }
     ];
 
     const state = {step:0, answers:{}};
     const steps = [...document.querySelectorAll(".step")];
-    const totalQuestions = 6;
-    const resultIndex = 7;
+    const totalQuestions = 7;
+    const resultIndex = 8;
 
     function updateProgress(){
       const pct = state.step === 0 ? 0 : Math.min(100, Math.round((Math.min(state.step, totalQuestions)/totalQuestions)*100));
@@ -454,8 +459,6 @@
               opt.classList.add("selected");
             }
             state.answers[key]=[...step.querySelectorAll(".option.selected")].map(o=>o.dataset.value);
-            const hint=document.getElementById("maxHint");
-            if(hint) hint.classList.toggle("show", state.answers[key].length===max);
           }
           const next=step.querySelector("[data-next]");
           const val=state.answers[key];
@@ -466,60 +469,80 @@
 
     function add(scoreMap,id,pts){ scoreMap[id]=(scoreMap[id]||0)+pts; }
 
+    /* =======================================================================
+       DE WEGING
+       Elke vraag heeft zijn eigen winnaar, zodat de zeven vragen samen de vijf
+       producten echt uit elkaar trekken:
+         1 hoeveelheid   grootverpakking tegenover klein
+         2 gerecht       hier zit de smaakverwachting en het bezorgmoment in
+         3 puurheid      LA751, het enige product met vier ingrediënten
+         4 prijs         LA746 uit Peru
+         5 aangebroken   haalt vooral de twee tubs omlaag: die zijn niet HPP
+         6 structuur     de tubs tegenover de rest
+         7 werkwijze     weegt mee, filtert niet: anders valt het beste product
+                         eruit op grond van een voorkeur
+       Vraag 5 en 7 wijzen allebei richting cups en spuitzak. Daarom geeft
+       vraag 5 vooral aftrek aan de tubs in plaats van bonus aan de cups; zo
+       telt het verschil één keer mee in plaats van twee keer.
+
+       Binnen één vraag heeft elk product precies evenveel punten te verdelen
+       over de antwoorden: 36 bij een vraag met drie antwoorden, 60 bij vijf,
+       48 bij vier. Zonder die regel wint een product dat overal net wat hoger
+       staat altijd, en dan doet het antwoord van de gast er niet meer toe.
+       ======================================================================= */
     function calculate(){
       const a=state.answers;
       const scores={};
-      products.forEach(p=>scores[p.id]=p.base);
+      products.forEach(p=>scores[p.id]=0);
 
-      (a.priorities||[]).forEach(pref=>{
-        products.forEach(p=>add(scores,p.id,p.scores[pref]||0));
+      const puntenkaarten=[
+        [a.volume, {
+          weinig:{la753:20, la7582:18, la750:14, la751:4,  la746:2},
+          middel:{la750:14, la7582:12, la751:12, la753:12, la746:10},
+          veel:  {la746:24, la751:20, la750:8,  la7582:6,  la753:4}
+        }],
+        [a.dish, {
+          nachos:   {la751:20, la750:16, la746:16, la7582:8,  la753:6},
+          hapjes:   {la7582:24, la751:10, la753:10, la750:8,  la746:6},
+          burger:   {la750:18, la746:18, la7582:14, la751:12, la753:6},
+          salade:   {la753:14, la746:14, la751:12, la750:12, la7582:10},
+          bezorging:{la753:24, la751:6,  la750:6,  la746:6,  la7582:4}
+        }],
+        [a.puur, {
+          strikt:{la751:28, la7582:14, la753:12, la750:6,  la746:2},
+          liefst:{la7582:14, la753:14, la750:12, la746:10, la751:6},
+          losjes:{la746:24, la750:18, la753:10, la7582:8,  la751:2}
+        }],
+        [a.prijs, {
+          prijs:    {la746:30, la750:20, la753:8,  la7582:4,  la751:2},
+          balans:   {la753:16, la7582:14, la750:12, la751:6,  la746:4},
+          kwaliteit:{la751:28, la7582:18, la753:12, la750:4,  la746:2}
+        }],
+        [a.open, {
+          zelfdedag:  {la750:24, la746:24, la751:12, la7582:8,  la753:6},
+          volgendedag:{la751:16, la7582:14, la753:14, la750:8,  la746:8},
+          derving:    {la753:16, la7582:14, la751:8,  la750:4,  la746:4}
+        }],
+        [a.structuur, {
+          glad:        {la7582:26, la753:24, la751:10, la750:2,  la746:2},
+          grof:        {la750:30, la746:28, la751:14, la7582:2,  la753:2},
+          geenvoorkeur:{la751:12, la753:10, la7582:8,  la746:6,  la750:4}
+        }],
+        [a.werkwijze, {
+          snel:        {la7582:30, la751:8,  la753:6,  la750:4,  la746:4},
+          zelf:        {la750:30, la746:30, la751:26, la7582:4,  la753:2},
+          porties:     {la753:32, la7582:6,  la751:4,  la750:4,  la746:4},
+          geenvoorkeur:{la751:10, la750:10, la746:10, la7582:8,  la753:8}
+        }]
+      ];
+
+      puntenkaarten.forEach(([antwoord, kaart])=>{
+        Object.entries(kaart[antwoord]||{}).forEach(([id,punten])=>add(scores,id,punten));
       });
 
-      const dishMap={
-        nachos:{la751:20, la750:16, la746:15, la7582:12, la753:10},
-        hapjes:{la7582:24, la753:14, la751:10, la750:6, la746:5},
-        burger:{la750:18, la7582:16, la746:15, la751:12, la753:8},
-        takeaway:{la753:26, la7582:12, la751:8, la750:6, la746:6},
-        dip:{la751:22, la750:14, la746:13, la7582:6, la753:4}
-      };
-      Object.entries(dishMap[a.dish]||{}).forEach(([id,p])=>add(scores,id,p));
-
-      // De manier van doseren is een harde filter
-      if(a.pack==="portie" || a.pack==="schep"){
-        products.forEach(p=>{ if(p.type!==a.pack) scores[p.id]=-999; });
-      }
-
-      const volumeMap={
-        high:{la746:20, la751:16, la7582:10, la753:9, la750:6},
-        mid:{la751:12, la750:12, la7582:11, la753:10, la746:9},
-        low:{la753:20, la7582:16, la750:10, la751:5, la746:3}
-      };
-      Object.entries(volumeMap[a.volume]||{}).forEach(([id,p])=>add(scores,id,p));
-
-      // Hoe langer het duurt voor de gast eet, hoe zwaarder de HPP-producten
-      // wegen: die blijven groen. De tubs zijn niet HPP-behandeld.
-      const timingMap={
-        direct:{la7582:14, la751:14, la750:12, la746:12, la753:8},
-        kort:{la7582:16, la751:14, la753:14, la750:6, la746:6},
-        lang:{la753:26, la7582:14, la751:12, la750:3, la746:3},
-        flex:{la753:12, la7582:10, la751:10, la750:7, la746:7}
-      };
-      Object.entries(timingMap[a.timing]||{}).forEach(([id,p])=>add(scores,id,p));
-
-      // Smaak en structuur volgens het dossier: LA751 puur en clean label,
-      // LA7582 en LA753 fijn en smeuïg door de HPP-bereiding,
-      // LA750 en LA746 grof en chunky, LA746 het meest naturel van smaak
-      const flavourMap={
-        fijn:{la7582:20, la753:18, la751:14},
-        chunky:{la750:26, la746:22, la751:8},
-        puur:{la751:30, la7582:12, la753:10},
-        naturel:{la746:24, la750:16, la753:8}
-      };
-      Object.entries(flavourMap[a.flavour]||{}).forEach(([id,p])=>add(scores,id,p));
-
-      const valid=products.filter(p=>scores[p.id]>-900).sort((x,y)=>scores[y.id]-scores[x.id]);
-      const max=valid[0] ? scores[valid[0].id] : 1;
-      return valid.map((p,i)=>{
+      const gesorteerd=[...products].sort((x,y)=>scores[y.id]-scores[x.id]);
+      const max=gesorteerd[0] ? scores[gesorteerd[0].id] : 1;
+      return gesorteerd.map((p,i)=>{
         const raw=scores[p.id];
         let pct=Math.round(72+(raw/max)*24-(i*2));
         pct=Math.max(58,Math.min(96,pct));
@@ -592,11 +615,8 @@
         (top[0] ? fullCard(top[0], 0) : "") +
         (rest.length ? `<div class="results-row">${rest.map((p,i)=>compactCard(p,i+1)).join("")}</div>` : "");
 
-      // Bij een filter op portie of scheppen blijven er minder dan 5 over
       document.getElementById("allProductsSummary").textContent =
-        all.length === products.length
-          ? `Bekijk alle ${products.length} producten met jouw matchpercentage`
-          : `Bekijk alle ${all.length} passende producten met jouw matchpercentage`;
+        `Bekijk alle ${products.length} producten met jouw matchpercentage`;
 
       document.getElementById("productGrid").innerHTML=all.map(p=>`
         <div class="product-mini">
@@ -616,7 +636,6 @@
       state.step=0;state.answers={};
       document.querySelectorAll(".option").forEach(o=>o.classList.remove("selected"));
       document.querySelectorAll("[data-next]").forEach(b=>{ if(b.closest(".step")?.dataset.step!=="0") b.disabled=true; });
-      document.getElementById("maxHint").classList.remove("show");
       showStep(0);
     }
     document.getElementById("restartTop").addEventListener("click",restart);
