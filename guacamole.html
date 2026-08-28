@@ -72,6 +72,8 @@
     .step.active .nav{margin-top:auto}
     @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
     .step h2{font-size:clamp(23px,3.2vw,30px);line-height:1.12;margin:0 0 18px}
+    /* Alleen op het startscherm: uitleg onder de kop, boven de fotostrook */
+    .lead{margin:-8px 0 4px;color:var(--muted);font-size:15px;line-height:1.5;max-width:62ch}
     .options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
     .option{
       position:relative;
@@ -235,6 +237,7 @@
       <div class="stage">
         <section class="step active" data-step="0">
           <h2>Welke guacamole past bij jouw zaak?</h2>
+          <p class="lead">Beantwoord zeven korte vragen en ontdek welke guacamole het beste bij jouw keuken past. Kies steeds het antwoord dat het meest van toepassing is.</p>
           <div class="start-images" id="startImages"></div>
           <div class="nav">
             <span></span>
@@ -243,74 +246,74 @@
         </section>
 
         <section class="step" data-step="1" data-key="volume">
-          <h2>Hoeveel guacamole gaat er bij jou doorheen?</h2>
+          <h2>Hoeveel guacamole gebruik je gemiddeld?</h2>
           <div class="options">
-            <button class="option" data-value="weinig"><span><b>Niet zo veel</b><small>Een bakje per week.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="middel"><span><b>Aardig wat</b><small>Een paar kilo in de week.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="veel"><span><b>Heel veel</b><small>We gaan er kilo's per dag doorheen.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="weinig"><span><b>Weinig, minder dan 500 gram per week</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="middel"><span><b>Redelijk wat, een paar kilo per week</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="veel"><span><b>Heel veel, meerdere kilo’s per dag</b></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
         </section>
 
         <section class="step" data-step="2" data-key="dish">
-          <h2>Waar gaat de guacamole overheen?</h2>
+          <h2>Waar gebruik je guacamole vooral bij?</h2>
           <div class="options">
-            <button class="option" data-value="nachos"><span><b>Over de nacho's</b><small>Nacho's, loaded fries en Mexicaanse schotels.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="hapjes"><span><b>Op hapjes en borrelplanken</b><small>Veel bordjes in korte tijd.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="burger"><span><b>Op burgers, wraps en broodjes</b><small>Een laag die blijft liggen.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="salade"><span><b>Door salades en bowls</b><small>Als frisse, luxe toevoeging.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="bezorging"><span><b>In bezorg- en afhaalmaaltijden</b><small>Hij moet groen zijn als de gast hem opent.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="nachos"><span><b>Nacho’s en loaded fries</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="hapjes"><span><b>Hapjes en borrelgerechten</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="burger"><span><b>Burgers, wraps en sandwiches</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="salade"><span><b>Bowls en salades</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="bezorging"><span><b>Bezorging, take-away en catering</b></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
         </section>
 
         <section class="step" data-step="3" data-key="puur">
-          <h2>Hoe puur wil je hem hebben?</h2>
+          <h2>Hoe belangrijk vind je een korte ingrediëntenlijst?</h2>
           <div class="options">
-            <button class="option" data-value="strikt"><span><b>Alleen avocado, ui, koriander en zout</b><small>Verder niks. Wat ik thuis ook in de koelkast heb staan.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="liefst"><span><b>Zo puur mogelijk, maar ik ben niet streng</b><small>Een schoon etiket is mooi meegenomen.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="losjes"><span><b>Als hij lekker is, vind ik het prima</b><small>Het gaat mij om wat er op het bord gebeurt.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="strikt"><span><b>Heel belangrijk: alleen avocado, ui, koriander en zout</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="liefst"><span><b>Ik kies graag voor een pure guacamole, maar dit is niet doorslaggevend</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="losjes"><span><b>Minder belangrijk, zolang de guacamole goed smaakt en prettig werkt</b></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
         </section>
 
         <section class="step" data-step="4" data-key="prijs">
-          <h2>Wat weegt bij jou zwaarder?</h2>
+          <h2>Wat vind je het belangrijkste bij een guacamole?</h2>
           <div class="options">
-            <button class="option" data-value="prijs"><span><b>De prijs, die moet scherp</b><small>Ik reken hard op mijn kostprijs per gerecht.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="balans"><span><b>Allebei een beetje</b><small>Goede kwaliteit voor een nette prijs.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="kwaliteit"><span><b>De kwaliteit</b><small>Daar mag hij best wat meer voor kosten.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="kwaliteit"><span><b>De kwaliteit, daar mag de guacamole best wat meer voor kosten</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="balans"><span><b>Een goede balans tussen kwaliteit en prijs</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="prijs"><span><b>Een scherpe prijs en zoveel mogelijk marge</b></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
         </section>
 
         <section class="step" data-step="5" data-key="open">
-          <h2>En als je een verpakking hebt opengemaakt?</h2>
+          <h2>Hoe snel gebruik je een geopende verpakking?</h2>
           <div class="options">
-            <button class="option" data-value="zelfdedag"><span><b>Die is dezelfde dag op</b><small>Bij ons blijft er niets staan.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="paardagen"><span><b>Die staat er nog een paar dagen</b><small>Dus hij moet mooi en groen blijven.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="derving"><span><b>Eerlijk? Daar gooien we geregeld wat van weg</b><small>Dat zou ik graag anders zien.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="zelfdedag"><span><b>Die gaat meestal dezelfde dag op</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="volgendedag"><span><b>Soms gebruiken we de guacamole de volgende dag opnieuw</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="derving"><span><b>Dat wisselt sterk, dus we willen vooral zo min mogelijk weggooien</b></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
         </section>
 
         <section class="step" data-step="6" data-key="structuur">
-          <h2>Hoe wil je hem op het bord zien?</h2>
+          <h2>Welke structuur zoek je?</h2>
           <div class="options">
-            <button class="option" data-value="glad"><span><b>Strak en glad</b><small>Een nette toef, overal hetzelfde.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="grof"><span><b>Grof en ambachtelijk</b><small>Met stukjes avocado erin, alsof hij net gemaakt is.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="geenvoorkeur"><span><b>Maakt me niet zoveel uit</b><small>Als hij maar smaakt.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="glad"><span><b>Glad en romig voor een strakke toef</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="grof"><span><b>Stevig en chunky om met een lepel te scheppen</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="geenvoorkeur"><span><b>Ik heb geen duidelijke voorkeur</b></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Volgende →</button></div>
         </section>
 
-        <section class="step" data-step="7" data-key="doseren">
-          <h2>En hoe gaat hij op het gerecht?</h2>
+        <section class="step" data-step="7" data-key="werkwijze">
+          <h2>Welke manier van werken past het beste bij jouw keuken?</h2>
           <div class="options">
-            <button class="option" data-value="spuitzak"><span><b>Met een spuitzak</b><small>Een toef per bord, in seconden klaar.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="lepel"><span><b>Met een lepel uit de bak</b><small>Ik bepaal zelf hoeveel er op gaat.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="cupje"><span><b>Als cupje ernaast</b><small>Kant-en-klaar geportioneerd.</small></span><span class="check">✓</span></button>
-            <button class="option" data-value="weetniet"><span><b>Geen idee, zeg jij het maar</b><small>Ik sta open voor alles.</small></span><span class="check">✓</span></button>
+            <button class="option" data-value="snel"><span><b>Snel veel gerechten achter elkaar opmaken</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="zelf"><span><b>Per gerecht zelf de juiste hoeveelheid bepalen</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="porties"><span><b>Werken met vaste porties en grip op de kostprijs</b></span><span class="check">✓</span></button>
+            <button class="option" data-value="geenvoorkeur"><span><b>Geen specifieke voorkeur, laat de test mij adviseren</b></span><span class="check">✓</span></button>
           </div>
           <div class="nav"><button class="btn secondary" data-prev>← Terug</button><button class="btn primary" data-next disabled>Bekijk mijn match →</button></div>
         </section>
@@ -476,7 +479,7 @@
          4 prijs         LA746 uit Peru
          5 aangebroken   haalt vooral de twee tubs omlaag: die zijn niet HPP
          6 structuur     de tubs tegenover de rest
-         7 doseren       weegt mee, filtert niet: anders valt het beste product
+         7 werkwijze     weegt mee, filtert niet: anders valt het beste product
                          eruit op grond van een voorkeur
        Vraag 5 en 7 wijzen allebei richting cups en spuitzak. Daarom geeft
        vraag 5 vooral aftrek aan de tubs in plaats van bonus aan de cups; zo
@@ -516,20 +519,20 @@
           kwaliteit:{la751:28, la7582:18, la753:12, la750:4,  la746:2}
         }],
         [a.open, {
-          zelfdedag:{la750:24, la746:24, la751:12, la7582:8,  la753:6},
-          paardagen:{la751:16, la7582:14, la753:14, la750:8,  la746:8},
-          derving:  {la753:16, la7582:14, la751:8,  la750:4,  la746:4}
+          zelfdedag:  {la750:24, la746:24, la751:12, la7582:8,  la753:6},
+          volgendedag:{la751:16, la7582:14, la753:14, la750:8,  la746:8},
+          derving:    {la753:16, la7582:14, la751:8,  la750:4,  la746:4}
         }],
         [a.structuur, {
           glad:        {la7582:26, la753:24, la751:10, la750:2,  la746:2},
           grof:        {la750:30, la746:28, la751:14, la7582:2,  la753:2},
           geenvoorkeur:{la751:12, la753:10, la7582:8,  la746:6,  la750:4}
         }],
-        [a.doseren, {
-          spuitzak:{la7582:30, la751:8,  la753:6,  la750:4,  la746:4},
-          lepel:   {la750:30, la746:30, la751:26, la7582:4,  la753:2},
-          cupje:   {la753:32, la7582:6,  la751:4,  la750:4,  la746:4},
-          weetniet:{la751:10, la750:10, la746:10, la7582:8,  la753:8}
+        [a.werkwijze, {
+          snel:        {la7582:30, la751:8,  la753:6,  la750:4,  la746:4},
+          zelf:        {la750:30, la746:30, la751:26, la7582:4,  la753:2},
+          porties:     {la753:32, la7582:6,  la751:4,  la750:4,  la746:4},
+          geenvoorkeur:{la751:10, la750:10, la746:10, la7582:8,  la753:8}
         }]
       ];
 
